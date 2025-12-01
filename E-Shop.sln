@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36301.6 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityService.Domain", "src\services\identity-service\IdentityService.Domain\IdentityService.Domain.csproj", "{026879EB-D6B1-4C59-BDEF-21F9D7CBD9D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityService.Infrastructure", "src\services\identity-service\IdentityService.Infrastructure\IdentityService.Infrastructure.csproj", "{3C0EB0B7-271E-47C8-926A-96B8891EDA10}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{026879EB-D6B1-4C59-BDEF-21F9D7CBD9D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{026879EB-D6B1-4C59-BDEF-21F9D7CBD9D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{026879EB-D6B1-4C59-BDEF-21F9D7CBD9D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{026879EB-D6B1-4C59-BDEF-21F9D7CBD9D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C0EB0B7-271E-47C8-926A-96B8891EDA10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C0EB0B7-271E-47C8-926A-96B8891EDA10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C0EB0B7-271E-47C8-926A-96B8891EDA10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C0EB0B7-271E-47C8-926A-96B8891EDA10}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B10DBF28-5544-4154-9458-876BBFE50C4F}
+	EndGlobalSection
+EndGlobal

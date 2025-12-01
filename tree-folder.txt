@@ -1,0 +1,46 @@
+E-Shop/
+├─ src/
+│  ├─ api-gateway/
+│  ├─ building-blocks/
+│  ├─ infrastructure/
+│  ├─ services/
+│  │  └─ identity-service/
+│  │     ├─ IdentityService.Domain/
+│  │     │  ├─ Aggregates/
+│  │     │  │  ├─ PermissionAggregate/
+│  │     │  │  │  ├─ Permission.cs
+│  │     │  │  │  └─ PermissionId.cs
+│  │     │  │  ├─ RefreshTokenAggregate/
+│  │     │  │  │  ├─ RefreshToken.cs
+│  │     │  │  │  ├─ RefreshTokenId.cs
+│  │     │  │  │  └─ RefreshTokenRevokedEvent.cs
+│  │     │  │  ├─ RoleAggregate/
+│  │     │  │  │  ├─ Role.cs
+│  │     │  │  │  └─ RoleId.cs
+│  │     │  │  └─ UserAggregate/
+│  │     │  │     ├─ PasswordHash.cs
+│  │     │  │     ├─ User.cs
+│  │     │  │     ├─ UserCreatedDomainEvent.cs
+│  │     │  │     ├─ UserEmail.cs
+│  │     │  │     ├─ UserId.cs
+│  │     │  │     ├─ UserLockedDomainEvent.cs
+│  │     │  │     └─ UserName.cs
+│  │     │  ├─ Common/
+│  │     │  │  ├─ AggregateRoot.cs
+│  │     │  │  ├─ Entity.cs
+│  │     │  │  ├─ IDomainEvent.cs
+│  │     │  │  └─ ValueObject.cs
+│  │     │  ├─ Interfaces/
+│  │     │  │  ├─ IPermissionRepository.cs
+│  │     │  │  ├─ IRefreshTokenRepository.cs
+│  │     │  │  ├─ IRoleRepository.cs
+│  │     │  │  ├─ IUnitOfWork.cs
+│  │     │  │  └─ IUserRepository.cs
+│  │     │  ├─ Properties/
+│  │     │  │  └─ launchSettings.json
+│  │     │  ├─ IdentityService.Domain.csproj
+│  │     │  └─ IdentityService.Domain.csproj.user
+│  │     └─ IdentityService.Infrastructure/
+│  └─ share-proto/
+├─ .gitignore
+└─ E-Shop.sln
