@@ -10,6 +10,9 @@ E-Shop/
 │  │     │  │  ├─ PermissionAggregate/
 │  │     │  │  │  ├─ Permission.cs
 │  │     │  │  │  └─ PermissionId.cs
+│  │     │  │  ├─ ProvinceAggregate/
+│  │     │  │  │  ├─ Province.cs
+│  │     │  │  │  └─ ProvinceId.cs
 │  │     │  │  ├─ RefreshTokenAggregate/
 │  │     │  │  │  ├─ RefreshToken.cs
 │  │     │  │  │  ├─ RefreshTokenId.cs
@@ -20,27 +23,48 @@ E-Shop/
 │  │     │  │  └─ UserAggregate/
 │  │     │  │     ├─ PasswordHash.cs
 │  │     │  │     ├─ User.cs
+│  │     │  │     ├─ UserAddress.cs
+│  │     │  │     ├─ UserAddressId.cs
 │  │     │  │     ├─ UserCreatedDomainEvent.cs
 │  │     │  │     ├─ UserEmail.cs
 │  │     │  │     ├─ UserId.cs
 │  │     │  │     ├─ UserLockedDomainEvent.cs
-│  │     │  │     └─ UserName.cs
+│  │     │  │     ├─ UserName.cs
+│  │     │  │     └─ UserPhone.cs
 │  │     │  ├─ Common/
 │  │     │  │  ├─ AggregateRoot.cs
 │  │     │  │  ├─ Entity.cs
 │  │     │  │  ├─ IDomainEvent.cs
 │  │     │  │  └─ ValueObject.cs
-│  │     │  ├─ Interfaces/
-│  │     │  │  ├─ IPermissionRepository.cs
-│  │     │  │  ├─ IRefreshTokenRepository.cs
-│  │     │  │  ├─ IRoleRepository.cs
-│  │     │  │  ├─ IUnitOfWork.cs
-│  │     │  │  └─ IUserRepository.cs
-│  │     │  ├─ Properties/
-│  │     │  │  └─ launchSettings.json
-│  │     │  ├─ IdentityService.Domain.csproj
-│  │     │  └─ IdentityService.Domain.csproj.user
+│  │     │  └─ Interfaces/
+│  │     │     ├─ IPermissionRepository.cs
+│  │     │     ├─ IProvinceRepository.cs
+│  │     │     ├─ IRefreshTokenRepository.cs
+│  │     │     ├─ IRoleRepository.cs
+│  │     │     ├─ IUnitOfWork.cs
+│  │     │     ├─ IUserAddressRepository.cs
+│  │     │     └─ IUserRepository.cs
 │  │     └─ IdentityService.Infrastructure/
+│  │        ├─ Data/
+│  │        │  └─ provinces.json
+│  │        └─ Persistence/
+│  │           ├─ Configurations/
+│  │           │  ├─ PermissionConfiguration.cs
+│  │           │  ├─ ProvinceConfiguration.cs
+│  │           │  ├─ RefreshTokenConfiguration.cs
+│  │           │  ├─ RoleConfiguration.cs
+│  │           │  ├─ UserAddressConfiguration.cs
+│  │           │  └─ UserConfiguration.cs
+│  │           ├─ Repositories/
+│  │           │  ├─ PermissionRepository.cs
+│  │           │  ├─ ProvinceRepository.cs
+│  │           │  ├─ RefreshTokenRepository.cs
+│  │           │  ├─ RoleRepository.cs
+│  │           │  ├─ UnitOfWork.cs
+│  │           │  ├─ UserAddressRepository.cs
+│  │           │  └─ UserRepository.cs
+│  │           └─ IdentityDbContext.cs
 │  └─ share-proto/
 ├─ .gitignore
-└─ E-Shop.sln
+├─ E-Shop.sln
+└─ tree-folder.txt
