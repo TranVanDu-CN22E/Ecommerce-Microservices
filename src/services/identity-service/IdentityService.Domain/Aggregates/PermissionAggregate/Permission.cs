@@ -4,13 +4,11 @@ namespace IdentityService.Domain.Aggregates.PermissionAggregate
 {
     public sealed class Permission : AggregateRoot<Guid>
     {
-        public PermissionId PermissionId { get; private set; } = default!;
-        public string Name { get; private set; } = string.Empty;
+        public string Name { get; private set; }
         private Permission() { }
         private Permission(PermissionId id, string name)
         {
             Id = id.Value;
-            PermissionId = id;
             Name = name;
         }
 

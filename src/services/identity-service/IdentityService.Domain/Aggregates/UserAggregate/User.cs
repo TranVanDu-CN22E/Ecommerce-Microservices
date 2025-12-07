@@ -1,10 +1,13 @@
-﻿using IdentityService.Domain.Common;
+﻿using IdentityService.Domain.Aggregates.RefreshTokenAggregate;
+using IdentityService.Domain.Aggregates.RoleAggregate;
+using IdentityService.Domain.Common;
 
 namespace IdentityService.Domain.Aggregates.UserAggregate
 {
     public sealed class User : AggregateRoot<Guid>
     {
         public UserEmail Email { get; private set; } = default!;
+        public UserPhone Phone { get; private set; } = default!;
         public UserName UserName { get; private set; } = default!;
         public PasswordHash PasswordHash { get; private set; } = default!;
 
@@ -12,23 +15,28 @@ namespace IdentityService.Domain.Aggregates.UserAggregate
         public int FailedLoginAttempts { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime? LockedUntil { get; private set; }
+        public RoleId RoleId { get; private set; }
+
+        public List<UserAddress> UserAddresses { get; private set; }
+        public List<RefreshToken> RefreshTokens { get; private set; }
+        public Role Role { get; private set; }
 
         private User() { }
 
-        private User(UserId userId, UserEmail email, UserName userName, PasswordHash passwordHash)
+        private User(UserId userId, UserEmail email, UserPhone phone, UserName userName, PasswordHash passwordHash)
         {
             Id = userId.Value;
             Email = email;
+            Phone = phone;
             UserName = userName;
             PasswordHash = passwordHash;
-
             CreatedAt = DateTime.UtcNow;
 
             AddDomainEvent(new UserCreatedDomainEvent(Id, Email.Value));
         }
 
-        public static User Create(UserEmail email, UserName userName, PasswordHash passwordHash)
-            => new(UserId.New(), email, userName, passwordHash);
+        public static User Create(UserEmail email, UserPhone phone, UserName userName, PasswordHash passwordHash)
+            => new(UserId.New(), email, phone, userName, passwordHash);
 
         public void Lock(string reason)
         {

@@ -1,4 +1,5 @@
-﻿using IdentityService.Domain.Common;
+﻿using IdentityService.Domain.Aggregates.UserAggregate;
+using IdentityService.Domain.Common;
 
 namespace IdentityService.Domain.Aggregates.RoleAggregate
 {
@@ -6,6 +7,7 @@ namespace IdentityService.Domain.Aggregates.RoleAggregate
     {
         public string RoleName { get; private set; } = string.Empty;
         public List<Guid> Permissions { get; private set; } = new();
+        public List<User> Users { get; private set; }
         private Role() { }
         private Role(RoleId roleId, string roleName) 
         {

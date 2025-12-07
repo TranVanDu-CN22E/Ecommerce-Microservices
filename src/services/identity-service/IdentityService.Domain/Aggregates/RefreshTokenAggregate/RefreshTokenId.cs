@@ -1,4 +1,5 @@
 ﻿using IdentityService.Domain.Common;
+using Medo;
 
 namespace IdentityService.Domain.Aggregates.RefreshTokenAggregate
 {
@@ -6,8 +7,7 @@ namespace IdentityService.Domain.Aggregates.RefreshTokenAggregate
     {
         public Guid Value { get; private set; } = default!;
         private RefreshTokenId(Guid value) { Value = value; }
-        public static RefreshTokenId Create (Guid id) => new(id);
-        public static RefreshTokenId New() => new(Guid.NewGuid());
+        public static RefreshTokenId New() => new(Uuid7.NewUuid7());
         protected override IEnumerable<object?> GetEqualityComponents()
         {
             yield return Value;

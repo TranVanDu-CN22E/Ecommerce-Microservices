@@ -1,4 +1,5 @@
 ﻿using IdentityService.Domain.Common;
+using Medo;
 
 namespace IdentityService.Domain.Aggregates.UserAggregate
 {
@@ -9,7 +10,7 @@ namespace IdentityService.Domain.Aggregates.UserAggregate
         private UserId(Guid value) => Value = value;
 
         public static UserId Create(Guid id) => new(id);
-        public static UserId New() => new(Guid.NewGuid());
+        public static UserId New() => new(Uuid7.NewUuid7());
 
         protected override IEnumerable<object> GetEqualityComponents()
         {
