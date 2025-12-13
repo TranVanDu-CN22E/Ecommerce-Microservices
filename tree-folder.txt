@@ -5,6 +5,27 @@ E-Shop/
 │  ├─ infrastructure/
 │  ├─ services/
 │  │  └─ identity-service/
+│  │     ├─ IdentityService.Api/
+│  │     │  ├─ Controllers/
+│  │     │  │  └─ WeatherForecastController.cs
+│  │     │  ├─ appsettings.Development.json
+│  │     │  ├─ appsettings.json
+│  │     │  ├─ IdentityService.Api.csproj
+│  │     │  ├─ IdentityService.Api.csproj.user
+│  │     │  ├─ IdentityService.Api.http
+│  │     │  ├─ Program.cs
+│  │     │  └─ WeatherForecast.cs
+│  │     ├─ IdentityService.Application/
+│  │     │  ├─ Abstractions/
+│  │     │  │  ├─ ICacheService.cs
+│  │     │  │  └─ IKafkaProducer.cs
+│  │     │  ├─ Behaviors/
+│  │     │  ├─ DTOs/
+│  │     │  ├─ Exceptions/
+│  │     │  ├─ Features/
+│  │     │  ├─ Mappings/
+│  │     │  ├─ IdentityService.Application.csproj
+│  │     │  └─ IdentityService.Application.csproj.user
 │  │     ├─ IdentityService.Domain/
 │  │     │  ├─ Aggregates/
 │  │     │  │  ├─ PermissionAggregate/
@@ -36,34 +57,49 @@ E-Shop/
 │  │     │  │  ├─ Entity.cs
 │  │     │  │  ├─ IDomainEvent.cs
 │  │     │  │  └─ ValueObject.cs
-│  │     │  └─ Interfaces/
-│  │     │     ├─ IPermissionRepository.cs
-│  │     │     ├─ IProvinceRepository.cs
-│  │     │     ├─ IRefreshTokenRepository.cs
-│  │     │     ├─ IRoleRepository.cs
-│  │     │     ├─ IUnitOfWork.cs
-│  │     │     ├─ IUserAddressRepository.cs
-│  │     │     └─ IUserRepository.cs
+│  │     │  ├─ Interfaces/
+│  │     │  │  ├─ IPermissionRepository.cs
+│  │     │  │  ├─ IProvinceRepository.cs
+│  │     │  │  ├─ IRefreshTokenRepository.cs
+│  │     │  │  ├─ IRoleRepository.cs
+│  │     │  │  ├─ IUnitOfWork.cs
+│  │     │  │  ├─ IUserAddressRepository.cs
+│  │     │  │  └─ IUserRepository.cs
+│  │     │  ├─ Properties/
+│  │     │  │  └─ launchSettings.json
+│  │     │  ├─ IdentityService.Domain.csproj
+│  │     │  └─ IdentityService.Domain.csproj.user
 │  │     └─ IdentityService.Infrastructure/
+│  │        ├─ Caching/
+│  │        │  └─ RedisCacheService.cs
 │  │        ├─ Data/
 │  │        │  └─ provinces.json
-│  │        └─ Persistence/
-│  │           ├─ Configurations/
-│  │           │  ├─ PermissionConfiguration.cs
-│  │           │  ├─ ProvinceConfiguration.cs
-│  │           │  ├─ RefreshTokenConfiguration.cs
-│  │           │  ├─ RoleConfiguration.cs
-│  │           │  ├─ UserAddressConfiguration.cs
-│  │           │  └─ UserConfiguration.cs
-│  │           ├─ Repositories/
-│  │           │  ├─ PermissionRepository.cs
-│  │           │  ├─ ProvinceRepository.cs
-│  │           │  ├─ RefreshTokenRepository.cs
-│  │           │  ├─ RoleRepository.cs
-│  │           │  ├─ UnitOfWork.cs
-│  │           │  ├─ UserAddressRepository.cs
-│  │           │  └─ UserRepository.cs
-│  │           └─ IdentityDbContext.cs
+│  │        ├─ Inbox/
+│  │        │  ├─ InboxMessage.cs
+│  │        │  └─ InboxProcessor.cs
+│  │        ├─ Messaging/
+│  │        │  ├─ KafkaConsumer.cs
+│  │        │  ├─ KafkaProducer.cs
+│  │        │  └─ KafkaSettings.cs
+│  │        ├─ Persistence/
+│  │        │  ├─ Configurations/
+│  │        │  │  ├─ PermissionConfiguration.cs
+│  │        │  │  ├─ ProvinceConfiguration.cs
+│  │        │  │  ├─ RefreshTokenConfiguration.cs
+│  │        │  │  ├─ RoleConfiguration.cs
+│  │        │  │  ├─ UserAddressConfiguration.cs
+│  │        │  │  └─ UserConfiguration.cs
+│  │        │  ├─ Repositories/
+│  │        │  │  ├─ PermissionRepository.cs
+│  │        │  │  ├─ ProvinceRepository.cs
+│  │        │  │  ├─ RefreshTokenRepository.cs
+│  │        │  │  ├─ RoleRepository.cs
+│  │        │  │  ├─ UnitOfWork.cs
+│  │        │  │  ├─ UserAddressRepository.cs
+│  │        │  │  └─ UserRepository.cs
+│  │        │  └─ IdentityDbContext.cs
+│  │        ├─ IdentityService.Infrastructure.csproj
+│  │        └─ IdentityService.Infrastructure.csproj.user
 │  └─ share-proto/
 ├─ .gitignore
 ├─ E-Shop.sln

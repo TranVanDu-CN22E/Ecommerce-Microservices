@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
-    <PackageReference Include="Medo.Uuid7" Version="3.2.0" />
+    <Folder Include="Behaviors\" />
+    <Folder Include="Features\" />
+    <Folder Include="DTOs\" />
+    <Folder Include="Mappings\" />
+    <Folder Include="Exceptions\" />
   </ItemGroup>
 
 </Project>

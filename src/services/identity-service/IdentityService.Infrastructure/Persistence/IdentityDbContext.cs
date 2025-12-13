@@ -3,6 +3,7 @@ using IdentityService.Domain.Aggregates.ProvinceAggregate;
 using IdentityService.Domain.Aggregates.RefreshTokenAggregate;
 using IdentityService.Domain.Aggregates.RoleAggregate;
 using IdentityService.Domain.Aggregates.UserAggregate;
+using IdentityService.Infrastructure.Inbox;
 using Microsoft.EntityFrameworkCore;
 
 namespace IdentityService.Infrastructure.Persistence
@@ -15,6 +16,9 @@ namespace IdentityService.Infrastructure.Persistence
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
         public DbSet<UserAddress> UserAddresses => Set<UserAddress>();
         public DbSet<Province> Provinces => Set<Province>();
+
+        public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
+        public DbSet<InboxMessage> InboxMessages => Set<InboxMessage>();
         public IdentityDbContext(DbContextOptions<IdentityDbContext> options)
         : base(options) { }
 
