@@ -1,4 +1,5 @@
 ﻿using Confluent.Kafka;
+using IdentityService.Infrastructure.Inbox;
 
 namespace IdentityService.Infrastructure.Messaging
 {
@@ -47,3 +48,4 @@ namespace IdentityService.Infrastructure.Messaging
             }
         }
     }
+}

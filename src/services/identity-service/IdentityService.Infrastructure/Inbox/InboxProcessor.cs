@@ -1,4 +1,5 @@
 ﻿using IdentityService.Infrastructure.Persistence;
+using Medo;
 using Microsoft.EntityFrameworkCore;
 
 namespace IdentityService.Infrastructure.Inbox
@@ -19,7 +20,7 @@ namespace IdentityService.Infrastructure.Inbox
 
             var msg = new InboxMessage
             {
-                Id = Guid.NewGuid(),
+                Id = Uuid7.NewUuid7(),
                 MessageId = messageId,
                 Payload = payload,
                 Processed = true

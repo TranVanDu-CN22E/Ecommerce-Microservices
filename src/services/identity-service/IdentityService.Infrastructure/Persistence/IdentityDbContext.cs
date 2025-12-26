@@ -17,7 +17,6 @@ namespace IdentityService.Infrastructure.Persistence
         public DbSet<UserAddress> UserAddresses => Set<UserAddress>();
         public DbSet<Province> Provinces => Set<Province>();
 
-        public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
         public DbSet<InboxMessage> InboxMessages => Set<InboxMessage>();
         public IdentityDbContext(DbContextOptions<IdentityDbContext> options)
         : base(options) { }

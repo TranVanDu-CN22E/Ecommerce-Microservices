@@ -1,4 +1,13 @@
 E-Shop/
+├─ .github/
+│  └─ workflows/
+├─ .idea/
+│  ├─ .gitignore
+│  ├─ E-Shop.iml
+│  ├─ misc.xml
+│  ├─ modules.xml
+│  ├─ vcs.xml
+│  └─ workspace.xml
 ├─ src/
 │  ├─ api-gateway/
 │  ├─ building-blocks/
@@ -10,20 +19,28 @@ E-Shop/
 │  │     │  │  └─ WeatherForecastController.cs
 │  │     │  ├─ appsettings.Development.json
 │  │     │  ├─ appsettings.json
-│  │     │  ├─ IdentityService.Api.csproj
-│  │     │  ├─ IdentityService.Api.csproj.user
-│  │     │  ├─ IdentityService.Api.http
 │  │     │  ├─ Program.cs
 │  │     │  └─ WeatherForecast.cs
 │  │     ├─ IdentityService.Application/
 │  │     │  ├─ Abstractions/
+│  │     │  │  ├─ Messaging/
+│  │     │  │  │  ├─ ICommand.cs
+│  │     │  │  │  ├─ ICommand{TResponse}.cs
+│  │     │  │  │  ├─ IQuery.cs
+│  │     │  │  │  └─ IQuery{TResponse}.cs
 │  │     │  │  ├─ ICacheService.cs
 │  │     │  │  └─ IKafkaProducer.cs
 │  │     │  ├─ Behaviors/
+│  │     │  │  ├─ LoggingBehavior.cs
+│  │     │  │  ├─ TransactionBehavior.cs
+│  │     │  │  └─ ValidationBehavior.cs
 │  │     │  ├─ DTOs/
 │  │     │  ├─ Exceptions/
 │  │     │  ├─ Features/
 │  │     │  ├─ Mappings/
+│  │     │  ├─ Properties/
+│  │     │  │  └─ launchSettings.json
+│  │     │  ├─ DependencyInjection.cs
 │  │     │  ├─ IdentityService.Application.csproj
 │  │     │  └─ IdentityService.Application.csproj.user
 │  │     ├─ IdentityService.Domain/
@@ -98,6 +115,8 @@ E-Shop/
 │  │        │  │  ├─ UserAddressRepository.cs
 │  │        │  │  └─ UserRepository.cs
 │  │        │  └─ IdentityDbContext.cs
+│  │        ├─ Properties/
+│  │        │  └─ launchSettings.json
 │  │        ├─ IdentityService.Infrastructure.csproj
 │  │        └─ IdentityService.Infrastructure.csproj.user
 │  └─ share-proto/
