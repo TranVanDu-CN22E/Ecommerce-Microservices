@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using IdentityService.Application.Abstractions.Messaging;
+using IdentityService.Application.Common;
 using MediatR;
 namespace IdentityService.Application.Behaviors;
 
@@ -19,22 +20,28 @@ public sealed class ValidationBehavior<TRequest, TResponse>
         RequestHandlerDelegate<TResponse> next,
         CancellationToken ct)
     {
-        if (_validators.Any())
-        {
-            var context = new ValidationContext<TRequest>(request);
+        if (!_validators.Any())
+            return await next();
 
-            var validationResults = await Task.WhenAll(
-                _validators.Select(v => v.ValidateAsync(context, ct)));
+        var context = new ValidationContext<TRequest>(request);
 
-            var failures = validationResults
-                .SelectMany(r => r.Errors)
-                .Where(f => f != null)
-                .ToList();
+        var validationResults = await Task.WhenAll(
+            _validators.Select(v => v.ValidateAsync(context, ct)));
 
-            if (failures.Any())
-                throw new ValidationException(failures);
-        }
+        var failures = validationResults
+            .SelectMany(r => r.Errors)
+            .Distinct()
+            .ToList();
 
-        return await next();
+        if (!failures.Any())
+            return await next();
+
+        var errors = failures
+            .Select(f => new Error(
+                f.ErrorCode,
+                f.ErrorMessage))
+            .ToList();
+
+        return (TResponse)(object)Result.Failure(errors);
     }
 }

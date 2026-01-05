@@ -4,16 +4,16 @@
     {
         public bool IsSuccess { get; }
         public bool IsFailure => !IsSuccess;
-        public Error? Error { get; }
-        protected Result(bool isSuccess, Error? error)
+        public IReadOnlyList<Error> Errors { get; }
+        protected Result(bool isSuccess, IReadOnlyList<Error> error)
         {
             IsSuccess = isSuccess;
-            Error = error;
+            Errors = error;
         }
         public static Result Success()
-            => new(true, null);
-        public static Result Failure(Error error)
-            => new(false, error);
+            => new(true, Array.Empty<Error>());
+        public static Result Failure(IReadOnlyList<Error> errors)
+            => new(false, errors);
     }
     public class Result<T> : Result
     {
@@ -22,14 +22,14 @@
             IsSuccess
                 ? _value!
                 : throw new InvalidOperationException("Cannot access Value when result is failure.");
-        protected Result(T? value, bool isSuccess, Error? error)
-            : base(isSuccess, error)
+        protected Result(T? value, bool isSuccess, IReadOnlyList<Error> errors)
+            : base(isSuccess, errors)
         {
             _value = value;
         }
         public static Result<T> Success(T value)
-            => new(value, true, null);
-        public static Result<T> Failure(Error error)
-            => new(default, false, error);
+            => new(value, true, Array.Empty<Error>());
+        public static Result<T> Failure(IReadOnlyList<Error> errors)
+            => new(default, false, errors);
     }
 }

@@ -18,6 +18,10 @@ namespace IdentityService.Infrastructure.Persistence.Configurations
 
             builder.Property(x => x.Permissions)
                 .HasColumnType("jsonb");
+            builder.HasMany(x => x.UserRoles)
+                .WithOne(x => x.Role)
+                .HasForeignKey(x => x.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

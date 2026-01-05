@@ -28,7 +28,9 @@ namespace IdentityService.Application.Features.Auth.Commands.Register
             var existingUser = await _userRepository.GetByEmailAsync(request.Email, ct);
             if (existingUser is not null)
             {
-                return Result<RegisterResponse>.Failure(UserErrors.EmailAlreadyExists);
+                return Result<RegisterResponse>.Failure(
+                    new[] { AuthErrors.EmailAlreadyExists }
+                );
             }
             var email = UserEmail.Create(request.Email);
             var phone = UserPhone.Create(request.Phone);

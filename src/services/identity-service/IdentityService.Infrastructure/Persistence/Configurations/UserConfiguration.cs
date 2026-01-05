@@ -1,4 +1,5 @@
 ﻿using IdentityService.Domain.Aggregates.UserAggregate;
+using IdentityService.Domain.Aggregates.RoleAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -49,14 +50,8 @@ namespace IdentityService.Infrastructure.Persistence.Configurations
                     .HasMaxLength(500)
                     .IsRequired();
             });
-            builder.OwnsOne(x => x.RoleId, e =>
-            {
-                e.Property(p => p.Value)
-                .HasColumnName("RoleId")
-                .IsRequired();
-            });
-            builder.HasOne(x => x.Role)
-                .WithMany(x => x.Users)
+            builder.HasMany(x => x.UserRoles)
+                .WithOne(x => x.User)
                 .HasForeignKey(x => x.RoleId)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -69,8 +64,6 @@ namespace IdentityService.Infrastructure.Persistence.Configurations
             builder.Navigation(x => x.Phone).AutoInclude();
             builder.Navigation(x => x.UserName).AutoInclude();
             builder.Navigation(x => x.PasswordHash).AutoInclude();
-            builder.Navigation(x => x.Role).AutoInclude();
-
         }
     }
 }

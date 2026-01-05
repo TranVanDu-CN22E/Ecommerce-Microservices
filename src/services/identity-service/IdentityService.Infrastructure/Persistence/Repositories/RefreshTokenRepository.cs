@@ -1,4 +1,5 @@
 ﻿using IdentityService.Domain.Aggregates.RefreshTokenAggregate;
+using IdentityService.Domain.Aggregates.UserAggregate;
 using IdentityService.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -20,5 +21,18 @@ namespace IdentityService.Infrastructure.Persistence.Repositories
 
         public async Task AddAsync(RefreshToken token, CancellationToken ct)
             => await _db.RefreshTokens.AddAsync(token, ct);
+        public async Task RevokeAllUserTokensAsync(
+            UserId userId,
+            CancellationToken ct)
+        {
+            var tokens = await _db.RefreshTokens
+                .Where(x => x.UserId == userId && !x.IsRevoked)
+                .ToListAsync(ct);
+
+            foreach (var token in tokens)
+            {
+                token.Revoke();
+            }
+        }
     }
 }

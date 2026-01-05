@@ -5,12 +5,10 @@ namespace IdentityService.Domain.Aggregates.RefreshTokenAggregate
     public sealed class RefreshTokenRevokedEvent : IDomainEvent
     {
         public Guid Token { get;}
-        public string Reason { get;}
         public DateTime OccurredOn { get; } = DateTime.UtcNow;
-        public RefreshTokenRevokedEvent(Guid token, string reason)
+        public RefreshTokenRevokedEvent(Guid token)
         {
             Token = token;
-            Reason = reason;
         }
     }
 }

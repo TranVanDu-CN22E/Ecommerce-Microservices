@@ -11,27 +11,25 @@ namespace IdentityService.Domain.Aggregates.RefreshTokenAggregate
         public DateTime ExpiresAt { get; private set; }
         public bool IsRevoked { get; private set; }
         public DateTime? RevokedAt { get; private set; }
-        public string? RevokedReason { get; private set; }
         private RefreshToken() { }
         private RefreshToken(RefreshTokenId refreshTokenId, UserId userId ,string token, DateTime expiresAt)
         {
             Id = refreshTokenId.Value;
             UserId = userId;
-            Token = Token ?? string.Empty;
+            Token = token ?? string.Empty;
             ExpiresAt = expiresAt;
         }
         public static RefreshToken Create (UserId userId, string token, DateTime expiresAt)
             => new (RefreshTokenId.New(), userId, token, expiresAt );
-        public void Revoke(string reason)
+        public void Revoke()
         {
             if (IsRevoked)
                 return;
 
             IsRevoked = true;
             RevokedAt = DateTime.UtcNow;
-            RevokedReason = reason;
 
-            AddDomainEvent(new RefreshTokenRevokedEvent(Id, reason));
+            AddDomainEvent(new RefreshTokenRevokedEvent(Id));
         }
 
         public bool IsExpired() => DateTime.UtcNow >= ExpiresAt;

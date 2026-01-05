@@ -15,11 +15,9 @@ namespace IdentityService.Domain.Aggregates.UserAggregate
         public int FailedLoginAttempts { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime? LockedUntil { get; private set; }
-        public RoleId RoleId { get; private set; }
-
+        public List<UserRole> UserRoles { get; private set; }
         public List<UserAddress> UserAddresses { get; private set; }
         public List<RefreshToken> RefreshTokens { get; private set; }
-        public Role Role { get; private set; }
 
         private User() { }
 

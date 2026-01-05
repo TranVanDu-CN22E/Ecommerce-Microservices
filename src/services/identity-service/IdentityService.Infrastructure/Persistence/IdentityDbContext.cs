@@ -16,6 +16,7 @@ namespace IdentityService.Infrastructure.Persistence
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
         public DbSet<UserAddress> UserAddresses => Set<UserAddress>();
         public DbSet<Province> Provinces => Set<Province>();
+        public DbSet<UserRole> UserRoles => Set<UserRole>();
 
         public DbSet<InboxMessage> InboxMessages => Set<InboxMessage>();
         public IdentityDbContext(DbContextOptions<IdentityDbContext> options)
