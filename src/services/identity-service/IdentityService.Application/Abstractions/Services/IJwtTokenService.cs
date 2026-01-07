@@ -7,6 +7,6 @@ namespace IdentityService.Application.Abstractions.Services
     {
         string GenerateAccessToken(User user, List<RoleId> roles);
         string GenerateRefreshToken();
-        Task<Guid?> ValidateRefreshTokenAsync(string refreshToken, CancellationToken ct);
+        Task<Guid?> ValidateRefreshTokenAsync(string refreshToken, CancellationToken ct = default);
     }
 }

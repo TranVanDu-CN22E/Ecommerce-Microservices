@@ -4,8 +4,8 @@ namespace IdentityService.Domain.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User?> GetByEmailAsync(string email, CancellationToken ct);
-        Task<User?> GetByIdAsync(Guid id, CancellationToken ct);
-        Task AddAsync(User user, CancellationToken ct);
+        Task<User?> GetByEmailAsync(string email, CancellationToken ct = default);
+        Task<User?> GetByIdAsync(UserId id, CancellationToken ct = default);
+        Task AddAsync(User user, CancellationToken ct = default);
     }
 }

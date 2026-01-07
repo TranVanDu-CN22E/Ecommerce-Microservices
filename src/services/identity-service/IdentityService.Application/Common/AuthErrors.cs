@@ -17,6 +17,11 @@
         public static readonly Error PasswordDigit = new("User.PasswordDigit", "Password must contain at least one digit");
         public static readonly Error PasswordSpecialChar = new("User.PasswordSpecialCharacter", "Password must contain at least one special character");
 
+        public static readonly Error RefreshTokenRequired = new("User.RefreshTokenRequired", "Refresh token is required");
+        public static readonly Error RefreshTokenExpired = new("User.RefreshTokenExpired", "The refresh token has expired.");
+        public static readonly Error RefreshTokenNotExist = new("User.RefreshTokenNotExist", "The refresh token does not exist");
 
+        public static readonly Error UserIdRequired = new("User.UserIdRequired", "UserId is required");
+        public static readonly Error UserNotExist = new("User.UserNotExist", "This user does not exist or their account has been locked.");
     }
 }

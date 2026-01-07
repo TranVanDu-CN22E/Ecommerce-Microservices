@@ -4,8 +4,8 @@ namespace IdentityService.Domain.Interfaces
 {
     public interface IProvinceRepository
     {
-        Task AddAsync(Province province, CancellationToken ct);
-        Task<Province?> GetProvinceById(int id, CancellationToken ct);
-        Task<List<Province>> GetAllAsync(CancellationToken ct);
+        Task AddAsync(Province province, CancellationToken ct = default);
+        Task<Province?> GetProvinceById(int id, CancellationToken ct = default);
+        Task<List<Province>> GetAllAsync(CancellationToken ct = default);
     }
 }

@@ -2,9 +2,7 @@
 {
     public interface IUnitOfWork
     {
-        // Lưu những thay đổi
         Task<int> SaveChangesAsync(CancellationToken ct = default);
-        /// Bắt đầu transaction
         Task BeginTransactionAsync(CancellationToken ct = default);
         /// Commit transaction
         Task CommitTransactionAsync(CancellationToken ct = default);

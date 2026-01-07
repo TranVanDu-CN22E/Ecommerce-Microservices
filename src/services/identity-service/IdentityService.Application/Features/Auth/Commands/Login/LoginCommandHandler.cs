@@ -1,8 +1,8 @@
 ﻿using IdentityService.Application.Abstractions.Messaging;
 using IdentityService.Application.Abstractions.Services;
 using IdentityService.Application.Common;
-using IdentityService.Domain.Aggregates.RefreshTokenAggregate;
 using IdentityService.Domain.Aggregates.UserAggregate;
+using IdentityService.Domain.Aggregates.RefreshTokenAggregate;
 using IdentityService.Domain.Interfaces;
 
 namespace IdentityService.Application.Features.Auth.Commands.Login
@@ -40,7 +40,7 @@ namespace IdentityService.Application.Features.Auth.Commands.Login
             if(!_passwordHasher.VerifyPassword(request.Password, user.PasswordHash.Value))
             {
                 user.IncreaseFailedLogin();
-                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync(ct);
                 return Result<LoginResponse>.Failure(new[] {AuthErrors.LoginFailed });
             }
 
@@ -50,7 +50,7 @@ namespace IdentityService.Application.Features.Auth.Commands.Login
             var accessToken = _jwtTokenService.GenerateAccessToken(user, roles);
             var refreshTokenValue = _jwtTokenService.GenerateRefreshToken();
             
-            var refreshToken = RefreshToken.Create(
+            var refreshToken = Domain.Aggregates.RefreshTokenAggregate.RefreshToken.Create(
                 UserId.Create(user.Id),
                 refreshTokenValue,
                 DateTime.UtcNow.AddDays(7)
@@ -62,8 +62,7 @@ namespace IdentityService.Application.Features.Auth.Commands.Login
             return Result<LoginResponse>.Success(new LoginResponse(
                 accessToken,
                 refreshTokenValue,
-                DateTime.UtcNow.AddMinutes(10),
-                DateTime.UtcNow.AddDays(7)
+                DateTime.UtcNow.AddMinutes(10)
             ));
         }
     }
