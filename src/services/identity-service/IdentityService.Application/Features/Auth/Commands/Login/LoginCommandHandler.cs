@@ -45,23 +45,17 @@ namespace IdentityService.Application.Features.Auth.Commands.Login
             }
 
             user.ResetFailedLogin();
-            var userId = UserId.Create(user.Id);
-            var roles = await _userRoleRepository.GetRoleIdsByUserAsync(userId, ct);
+            var roles = await _userRoleRepository.GetRoleIdsByUserAsync(user.Id.ToString(), ct);
             var accessToken = _jwtTokenService.GenerateAccessToken(user, roles);
-            var refreshTokenValue = _jwtTokenService.GenerateRefreshToken();
+            var refreshToken = _jwtTokenService.GenerateRefreshToken();
             
-            var refreshToken = Domain.Aggregates.RefreshTokenAggregate.RefreshToken.Create(
-                UserId.Create(user.Id),
-                refreshTokenValue,
-                DateTime.UtcNow.AddDays(7)
-            );
-            await _refreshTokenRepository.RevokeAllUserTokensAsync(userId, ct);
-            await _refreshTokenRepository.AddAsync(refreshToken, ct);
+            await _refreshTokenRepository.RevokeAllUserTokensAsync(user.Id.ToString(), ct);
+            await _refreshTokenRepository.AddAsync(user.Id.ToString(), refreshToken, ct);
             await _unitOfWork.SaveChangesAsync(ct);
 
             return Result<LoginResponse>.Success(new LoginResponse(
                 accessToken,
-                refreshTokenValue,
+                refreshToken,
                 DateTime.UtcNow.AddMinutes(10)
             ));
         }

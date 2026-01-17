@@ -17,8 +17,7 @@ namespace IdentityService.Application.Features.Auth.Commands.Logout
 
         public async Task<Result> Handle(LogoutCommand request, CancellationToken cancellationToken)
         {
-            var userId = UserId.Create(Guid.Parse(request.UserId));
-            await _refreshTokenRep.RevokeAllUserTokensAsync(userId, cancellationToken);
+            await _refreshTokenRep.RevokeAllUserTokensAsync(request.UserId, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return Result.Success();
         }

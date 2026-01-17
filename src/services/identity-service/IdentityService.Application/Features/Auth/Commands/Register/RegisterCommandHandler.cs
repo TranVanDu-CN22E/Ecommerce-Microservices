@@ -1,7 +1,6 @@
 ﻿using IdentityService.Application.Abstractions.Messaging;
 using IdentityService.Application.Abstractions.Services;
 using IdentityService.Application.Common;
-using IdentityService.Domain.Aggregates.UserAggregate;
 using IdentityService.Domain.Interfaces;
 
 namespace IdentityService.Application.Features.Auth.Commands.Register
@@ -32,21 +31,15 @@ namespace IdentityService.Application.Features.Auth.Commands.Register
                     new[] { AuthErrors.EmailAlreadyExists }
                 );
             }
-            var email = UserEmail.Create(request.Email);
-            var phone = UserPhone.Create(request.Phone);
-            var userName = UserName.Create(request.UserName);
-            var passwordHash = PasswordHash.Create(_passwordHasher.HashPassword(request.Password));
 
-            var user = User.Create(email, phone, userName, passwordHash);
-
-            await _userRepository.AddAsync(user, ct);
+            var user = await _userRepository.AddAsync(request.Email, request.Phone, request.UserName, _passwordHasher.HashPassword(request.Password), ct);
             await _unitOfWork.SaveChangesAsync(ct);
-            _ = _emailService.SendWelcomeEmailAsync(user.Email.Value, user.UserName.Value, ct);
+            await _emailService.SendWelcomeEmailAsync(request.Email, request.UserName, ct);
 
             return Result<RegisterResponse>.Success(new RegisterResponse(
                 user.Id,
-                user.Email.Value,
-                user.UserName.Value,
+                user.Email.ToString(),
+                user.UserName.ToString(),
                 user.CreatedAt
             ));
         }

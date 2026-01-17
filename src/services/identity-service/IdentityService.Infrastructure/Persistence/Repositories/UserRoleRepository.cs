@@ -13,30 +13,36 @@ namespace IdentityService.Infrastructure.Persistence.Repositories
             _identityDbContext = identityDbContext;
         }
 
-        public async Task AddAsync(UserRole userRole, CancellationToken cancellationToken = default)
+        public async Task AddAsync(string userId, string roleId, CancellationToken cancellationToken = default)
         {
+            var userRole = UserRole.Create(UserId.Create(Guid.Parse(userId)), RoleId.Create(Guid.Parse(roleId)));
             await _identityDbContext.UserRoles.AddAsync(userRole, cancellationToken);
         }
-        public Task RemoveAsync(UserRole userRole, CancellationToken cancellationToken = default)
+        public async Task<Task> RemoveAsync(string roleId, CancellationToken cancellationToken = default)
         {
-            _identityDbContext.UserRoles.Remove(userRole);
-            return Task.CompletedTask;
+            var role = await _identityDbContext.UserRoles.FirstOrDefaultAsync(x => x.RoleId.ToString() == roleId, cancellationToken);
+            if (role != null)
+            {
+                _identityDbContext.UserRoles.Remove(role);
+                return Task.CompletedTask;
+            }
+            return Task.FromException(new InvalidOperationException("Role is not found"));
         }
 
-        public async Task<bool> ExistsAsync(UserId userId, RoleId roleId, CancellationToken cancellationToken = default)
+        public async Task<bool> ExistsAsync(string userId, string roleId, CancellationToken cancellationToken = default)
         {
-            return await _identityDbContext.UserRoles.AnyAsync(x => x.UserId == userId && x.RoleId == roleId , cancellationToken);
+            return await _identityDbContext.UserRoles.AnyAsync(x => x.UserId.ToString() == userId && x.RoleId.ToString() == roleId , cancellationToken);
         }
 
-        public async Task<UserRole?> GetAsync(UserId userId, RoleId roleId, CancellationToken cancellationToken = default)
+        public async Task<UserRole?> GetAsync(string userId, string roleId, CancellationToken cancellationToken = default)
         {
-            return await _identityDbContext.UserRoles.FirstOrDefaultAsync(x => x.UserId == userId && x.RoleId == roleId, cancellationToken);
+            return await _identityDbContext.UserRoles.FirstOrDefaultAsync(x => x.UserId.ToString() == userId && x.RoleId.ToString() == roleId, cancellationToken);
         }
 
-        public async Task<List<RoleId>> GetRoleIdsByUserAsync(UserId userId, CancellationToken cancellationToken = default)
+        public async Task<List<RoleId>> GetRoleIdsByUserAsync(string userId, CancellationToken cancellationToken = default)
         {
             return await _identityDbContext.UserRoles
-                .Where(x => x.UserId == userId)
+                .Where(x => x.UserId.ToString() == userId)
                 .Select(x => x.RoleId)
                 .ToListAsync(cancellationToken);
         }

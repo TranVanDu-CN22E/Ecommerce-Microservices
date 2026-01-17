@@ -8,10 +8,6 @@ namespace IdentityService.Infrastructure.Persistence.Repositories
     {
         private IdentityDbContext _db;
         public ProvinceRepository(IdentityDbContext db) => _db = db;
-        public async Task AddAsync(Province province, CancellationToken ct)
-        {
-            await _db.Provinces.AddAsync(province, ct);
-        }
 
         public async Task<List<Province>> GetAllAsync(CancellationToken ct)
         {

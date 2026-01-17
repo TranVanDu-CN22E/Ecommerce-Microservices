@@ -5,18 +5,16 @@ namespace IdentityService.Domain.Interfaces
 {
     public interface IUserRoleRepository
     {
-        Task AddAsync(UserRole userRole, CancellationToken cancellationToken = default);
-        Task RemoveAsync(UserRole userRole, CancellationToken cancellationToken = default);
+        Task AddAsync(string userId, string roleId, CancellationToken cancellationToken = default);
+        Task<Task>RemoveAsync(string roleId, CancellationToken cancellationToken = default);
         Task<UserRole?> GetAsync(
-            UserId userId,
-            RoleId roleId,
+            string userId, string roleId,
             CancellationToken cancellationToken = default);
         Task<bool> ExistsAsync(
-            UserId userId,
-            RoleId roleId,
+            string userId, string roleId,
             CancellationToken cancellationToken = default);
         Task<List<RoleId>> GetRoleIdsByUserAsync(
-            UserId userId,
+            string userId,
             CancellationToken cancellationToken = default);
     }
 }

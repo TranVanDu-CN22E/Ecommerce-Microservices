@@ -30,30 +30,23 @@ namespace IdentityService.Application.Features.Auth.Commands.RefreshToken
         }
         public async Task<Result<RefreshTokenResponse>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
         {
-            var userId = UserId.Create(Guid.Parse(request.UserId));
-
             var refreshToken = await _refreshTokenRep.GetByTokenAsync(request.RefreshToken, cancellationToken);
             if (refreshToken is null) return Result<RefreshTokenResponse>.Failure(new[] { AuthErrors.RefreshTokenNotExist });
             if (refreshToken.IsExpired() == true || refreshToken.IsRevoked == true) return Result<RefreshTokenResponse>.Failure([AuthErrors.RefreshTokenExpired]);
 
-            var user = await _userRep.GetByIdAsync(userId, cancellationToken);
+            var user = await _userRep.GetByIdAsync(request.UserId, cancellationToken);
             if (user is null || user.IsLocked == true) return Result<RefreshTokenResponse>.Failure([AuthErrors.UserNotExist]);
 
-            var roles = await _roleRep.GetRoleIdsByUserAsync(userId, cancellationToken);
+            var roles = await _roleRep.GetRoleIdsByUserAsync(request.UserId, cancellationToken);
             var accessToken = _jwtTokenService.GenerateAccessToken(user, roles);
-            var newRefreshTokenValue = _jwtTokenService.GenerateRefreshToken();
+            var newRefreshToken = _jwtTokenService.GenerateRefreshToken();
 
-            var newRefreshToken = Domain.Aggregates.RefreshTokenAggregate.RefreshToken.Create(
-                userId,
-                newRefreshTokenValue,
-                DateTime.UtcNow.AddDays(7)
-                );
-            await _refreshTokenRep.RevokeAllUserTokensAsync(userId, cancellationToken);
-            await _refreshTokenRep.AddAsync(newRefreshToken, cancellationToken);
+            await _refreshTokenRep.RevokeAllUserTokensAsync(request.UserId, cancellationToken);
+            await _refreshTokenRep.AddAsync(accessToken, newRefreshToken, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return Result<RefreshTokenResponse>.Success( new RefreshTokenResponse(
                 accessToken,
-                newRefreshTokenValue,
+                newRefreshToken,
                 DateTime.UtcNow.AddMinutes(10)
                 )
             );

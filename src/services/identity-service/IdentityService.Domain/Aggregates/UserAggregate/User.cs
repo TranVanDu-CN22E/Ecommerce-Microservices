@@ -13,8 +13,10 @@ namespace IdentityService.Domain.Aggregates.UserAggregate
 
         public bool IsLocked { get; private set; }
         public int FailedLoginAttempts { get; private set; }
+        public bool IsBanned { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime? LockedUntil { get; private set; }
+        public DateTime? BannedUntil { get; private set; }
         public List<UserRole> UserRoles { get; private set; }
         public List<UserAddress> UserAddresses { get; private set; }
         public List<RefreshToken> RefreshTokens { get; private set; }
@@ -35,6 +37,26 @@ namespace IdentityService.Domain.Aggregates.UserAggregate
 
         public static User Create(UserEmail email, UserPhone phone, UserName userName, PasswordHash passwordHash)
             => new(UserId.New(), email, phone, userName, passwordHash);
+        
+        public void Update(UserEmail? email, UserPhone? phone, UserName? userName, PasswordHash? passwordHash)
+        {
+            if(email is not null) Email = email;
+            if(phone is not null) Phone = phone;
+            if(userName is not null) UserName = userName;
+            if(passwordHash is not null) PasswordHash = passwordHash;
+        }
+
+        public void Ban(string reason)
+        {
+            IsBanned = true;
+            BannedUntil = DateTime.UtcNow;
+            AddDomainEvent(new UserBannedDomainEvent(Id, reason, BannedUntil));
+        }
+        public void Unban(string reason)
+        {
+            IsBanned = false;
+            AddDomainEvent(new UserBannedDomainEvent(Id, reason, DateTime.UtcNow));
+        }
 
         public void Lock(string reason)
         {

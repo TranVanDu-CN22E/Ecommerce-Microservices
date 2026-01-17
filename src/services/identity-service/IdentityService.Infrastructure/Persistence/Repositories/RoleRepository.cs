@@ -10,10 +10,13 @@ namespace IdentityService.Infrastructure.Persistence.Repositories
 
         public RoleRepository(IdentityDbContext db) => _db = db;
 
-        public Task<Role?> GetByIdAsync(Guid id, CancellationToken ct)
-            => _db.Roles.AsNoTracking().FirstOrDefaultAsync(r => r.Id == id, ct);
+        public Task<Role?> GetByIdAsync(string id, CancellationToken ct)
+            => _db.Roles.AsNoTracking().FirstOrDefaultAsync(r => r.Id.ToString() == id, ct);
 
-        public async Task AddAsync(Role role, CancellationToken ct)
-            => await _db.Roles.AddAsync(role, ct);
+        public async Task AddAsync(string name, CancellationToken ct)
+        {
+            var role = Role.Create(name);
+            await _db.Roles.AddAsync(role, ct);
+        }
     }
 }
