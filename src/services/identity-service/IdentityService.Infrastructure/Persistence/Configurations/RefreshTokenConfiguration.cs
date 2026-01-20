@@ -35,9 +35,6 @@ namespace IdentityService.Infrastructure.Persistence.Configurations
             builder.Property(x => x.RevokedAt)
                 .HasColumnName("RevokeAt")
                 .HasMaxLength(100);
-            builder.Property(x => x.RevokedReason)
-                .HasColumnName("RevokedReason")
-                .HasMaxLength(100);
             builder.HasIndex(x => new { x.UserId, x.ExpiresAt}).HasDatabaseName("IX_RefreshToken_UserId"); ;
         }
     }

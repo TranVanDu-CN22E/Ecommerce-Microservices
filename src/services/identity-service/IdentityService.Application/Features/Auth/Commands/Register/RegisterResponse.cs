@@ -2,7 +2,7 @@
 {
     public sealed record RegisterResponse
     (
-        Guid UserId,
+        string UserId,
         string Email,
         string UserName,
         DateTime CreateAt

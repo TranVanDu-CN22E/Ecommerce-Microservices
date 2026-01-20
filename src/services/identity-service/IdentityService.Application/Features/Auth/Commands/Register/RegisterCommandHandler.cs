@@ -37,7 +37,7 @@ namespace IdentityService.Application.Features.Auth.Commands.Register
             await _emailService.SendWelcomeEmailAsync(request.Email, request.UserName, ct);
 
             return Result<RegisterResponse>.Success(new RegisterResponse(
-                user.Id,
+                user.Id.ToString(),
                 user.Email.ToString(),
                 user.UserName.ToString(),
                 user.CreatedAt
