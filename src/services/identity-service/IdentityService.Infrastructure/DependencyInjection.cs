@@ -1,5 +1,6 @@
 ﻿using IdentityService.Application.Abstractions.Services;
 using IdentityService.Domain.Interfaces;
+using IdentityService.Infrastructure.Mail;
 using IdentityService.Infrastructure.Persistence;
 using IdentityService.Infrastructure.Persistence.Repositories;
 using IdentityService.Infrastructure.Security;
@@ -10,9 +11,9 @@ namespace IdentityService.Infrastructure
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<IdentityDbContext>(o => o.UseNpgsql("Host=localhost;Port=5435;Database=ev_identity;Username=ev_identity;Password=ev_identity_pw"));
+            services.AddDbContext<IdentityDbContext>(o => o.UseNpgsql(configuration.GetConnectionString("Default")));
             services.AddScoped<IPermissionRepository, PermissionRepository>();
             services.AddScoped<IProvinceRepository, ProvinceRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
@@ -23,6 +24,8 @@ namespace IdentityService.Infrastructure
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();
             services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
             services.AddScoped<IJwtTokenService, JwtTokenGenerator>();
+            services.Configure<EmailSetting>(configuration.GetSection("Email"));
+            services.AddScoped<IEmailService, EmailSender>();
             return services;
         }
     }
