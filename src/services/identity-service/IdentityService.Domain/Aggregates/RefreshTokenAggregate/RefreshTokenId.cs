@@ -8,6 +8,8 @@ namespace IdentityService.Domain.Aggregates.RefreshTokenAggregate
         public Guid Value { get; private set; } = default!;
         private RefreshTokenId(Guid value) { Value = value; }
         public static RefreshTokenId New() => new(Uuid7.NewUuid7());
+        public static RefreshTokenId From(Guid value)
+            => new(value);
         protected override IEnumerable<object?> GetEqualityComponents()
         {
             yield return Value;

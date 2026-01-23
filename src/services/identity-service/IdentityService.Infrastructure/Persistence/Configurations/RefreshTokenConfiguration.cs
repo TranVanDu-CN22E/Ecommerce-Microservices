@@ -1,4 +1,5 @@
 ﻿using IdentityService.Domain.Aggregates.RefreshTokenAggregate;
+using IdentityService.Domain.Aggregates.UserAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,16 +13,17 @@ namespace IdentityService.Infrastructure.Persistence.Configurations
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedNever();
 
-            builder.OwnsOne(x => x.UserId, e =>
-            {
-                e.Property(p => p.Value)
-                .HasColumnName("UserId")
-                .IsRequired();
-            });
+            builder.Property(x => x.UserId)
+                   .HasConversion(
+                       v => v.Value,
+                       v => UserId.Create(v))
+                   .HasColumnName("UserId")
+                   .IsRequired();
+
             builder.HasOne(x => x.User)
                 .WithMany(x => x.RefreshTokens)
                 .HasForeignKey(x => x.UserId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Cascade);
             builder.Property(x => x.Token)
                 .HasColumnName("Token")
                 .HasMaxLength(500)

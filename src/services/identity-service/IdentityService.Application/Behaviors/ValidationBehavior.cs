@@ -2,6 +2,7 @@
 using IdentityService.Application.Abstractions.Messaging;
 using IdentityService.Application.Common;
 using MediatR;
+using System.Reflection;
 namespace IdentityService.Application.Behaviors;
 
 public sealed class ValidationBehavior<TRequest, TResponse>
@@ -42,6 +43,34 @@ public sealed class ValidationBehavior<TRequest, TResponse>
                 f.ErrorMessage))
             .ToList();
 
-        return (TResponse)(object)Result.Failure(errors);
+        var responseType = typeof(TResponse);
+
+        if (!responseType.IsGenericType ||
+            responseType.GetGenericTypeDefinition() != typeof(Result<>))
+        {
+            throw new InvalidOperationException(
+                "ValidationBehavior chỉ hỗ trợ Result<T>");
+        }
+
+        var valueType = responseType.GetGenericArguments()[0];
+
+        var resultType = typeof(Result<>).MakeGenericType(valueType);
+
+        var failureMethod = resultType
+            .GetMethod(
+                nameof(Result<object>.Failure),
+                BindingFlags.Public | BindingFlags.Static,
+                new[] { typeof(IReadOnlyList<Error>) });
+
+        if (failureMethod is null)
+        {
+            throw new InvalidOperationException(
+                $"Không tìm thấy Failure trên {resultType.Name}");
+        }
+
+        var result = failureMethod.Invoke(null, new object[] { errors });
+
+        return (TResponse)result!;
+
     }
 }

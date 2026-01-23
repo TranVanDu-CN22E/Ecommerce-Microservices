@@ -12,8 +12,9 @@
         }
         public static Result Success()
             => new(true, Array.Empty<Error>());
-        public static Result Failure(IReadOnlyList<Error> errors)
-            => new(false, errors);
+        public static Result<T> Failure<T>(IReadOnlyList<Error> errors)
+            => Result<T>.Failure(errors);
+
     }
     public class Result<T> : Result
     {

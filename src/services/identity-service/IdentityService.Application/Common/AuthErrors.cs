@@ -21,7 +21,15 @@
         public static readonly Error RefreshTokenExpired = new("User.RefreshTokenExpired", "The refresh token has expired.");
         public static readonly Error RefreshTokenNotExist = new("User.RefreshTokenNotExist", "The refresh token does not exist");
 
-        public static readonly Error UserIdRequired = new("User.UserIdRequired", "UserId is required");
+        public static readonly Error UserIdRequired = new("User.UserRequired", "UserId is required");
         public static readonly Error UserNotExist = new("User.UserNotExist", "This user does not exist or their account has been locked.");
+
+        public static readonly Error PhoneRequired = new("User.PhoneIsRequired", "Phone is required");
+        public static readonly Error PhoneInvalid = new("User.PhoneInvalid", "Invalid phone format");
+
+        public static readonly Error UsernameRequired = new("User.UsernameRequired", "Username is required");
+        public static readonly Error UsernameMinimum = new("User.UsernameMinimum", "Username must be at least 3 characters");
+        public static readonly Error UsernameMaximum = new("User.UsernameMaximum", "Username must not exceed 50 characters");
+        public static readonly Error UsernameInvalid = new("User.UsernameInvalid", "Username can only contain letters, numbers and underscores");
     }
 }

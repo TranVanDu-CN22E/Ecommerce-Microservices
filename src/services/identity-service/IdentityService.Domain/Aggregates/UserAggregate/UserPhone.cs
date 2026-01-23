@@ -15,7 +15,7 @@ namespace IdentityService.Domain.Aggregates.UserAggregate
         public static UserPhone Create(string value)
         {
             if (string.IsNullOrWhiteSpace(value)) throw new ArgumentException("Phone cannot be empty", nameof(value));
-            if (value.Length != 10 || !value.All(char.IsDigit)) throw new ArgumentException("Phone must be 10 digits", nameof(value));
+            if (value.Length < 9 || value.Length > 15 || !value.All(char.IsDigit)) throw new ArgumentException("Phone must be 10 digits", nameof(value));
             return new(value);
         }
         protected override IEnumerable<object?> GetEqualityComponents()

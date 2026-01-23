@@ -11,13 +11,13 @@ namespace IdentityService.Application.Features.Auth.Commands.Register
                 .EmailAddress().WithErrorCode(AuthErrors.EmailInvalid.Code).WithMessage(AuthErrors.EmailInvalid.Message)
                 .MaximumLength(255).WithErrorCode(AuthErrors.EmailMaxLength.Code).WithMessage(AuthErrors.EmailMaxLength.Message);
             RuleFor(x => x.Phone)
-                .NotEmpty().WithMessage("Phone is required")
-                .Matches(@"^[0-9]{10-11}$").WithMessage("Invalid phone format");
+                .NotEmpty().WithErrorCode(AuthErrors.PhoneRequired.Code).WithMessage(AuthErrors.PhoneRequired.Message)
+                .Matches(@"^[0-9]{9,15}$").WithErrorCode(AuthErrors.PhoneInvalid.Code).WithMessage(AuthErrors.PhoneInvalid.Message);
             RuleFor(x => x.UserName)
-                .NotEmpty().WithMessage("Username is required")
-                .MinimumLength(3).WithMessage("Username must be at least 3 characters")
-                .MaximumLength(50).WithMessage("Username must not exceed 50 characters")
-                .Matches(@"^[a-zA-Z0-9_]+$").WithMessage("Username can only contain letters, numbers and underscores");
+                .NotEmpty().WithErrorCode(AuthErrors.UsernameRequired.Code).WithMessage(AuthErrors.UsernameRequired.Message)
+                .MinimumLength(3).WithErrorCode(AuthErrors.UsernameMinimum.Code).WithMessage(AuthErrors.UsernameMinimum.Message)
+                .MaximumLength(50).WithErrorCode(AuthErrors.UsernameMaximum.Code).WithMessage(AuthErrors.UsernameMaximum.Message)
+                .Matches(@"^[\p{L}0-9]+( [\p{L}0-9]+)*$").WithErrorCode(AuthErrors.UsernameInvalid.Code).WithMessage(AuthErrors.UsernameInvalid.Message);
             RuleFor(x => x.Password)
                 .NotEmpty().WithErrorCode(AuthErrors.PasswordRequired.Code).WithMessage(AuthErrors.PasswordRequired.Message)
                 .MinimumLength(8).WithErrorCode(AuthErrors.PasswordMinimum.Code).WithMessage(AuthErrors.PasswordMinimum.Message)
