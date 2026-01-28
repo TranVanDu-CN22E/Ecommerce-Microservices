@@ -10,7 +10,12 @@ namespace IdentityService.Infrastructure.Persistence.Configurations
         {
             builder.ToTable("Roles");
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).ValueGeneratedNever();
+            builder.Property(x => x.Id)
+                .HasConversion(
+                    id => id.Value,
+                    value => RoleId.Create(value)
+                )
+                .ValueGeneratedNever();
 
             builder.Property(x => x.RoleName)
                 .IsRequired()

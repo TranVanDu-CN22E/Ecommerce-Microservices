@@ -16,11 +16,11 @@ namespace IdentityService.Infrastructure.Persistence.Repositories
         }
 
         public async Task<UserAddress?> GetUserAddressByIdAsync(string id, CancellationToken ct)
-            => await _db.UserAddresses.AsNoTracking().FirstOrDefaultAsync(x => x.Id.ToString() == id, ct);
+            => await _db.UserAddresses.AsNoTracking().FirstOrDefaultAsync(x => x.Id == UserAddressId.Create(Guid.Parse(id)), ct);
 
         public async Task<List<UserAddress>> GetUserAddressByUserIdAsync(string userId, CancellationToken ct)
         {
-            return await _db.UserAddresses.AsNoTracking().Where(x => x.UserId.ToString() == userId).ToListAsync(ct);
+            return await _db.UserAddresses.AsNoTracking().Where(x => x.UserId == UserId.Create(Guid.Parse(userId))).ToListAsync(ct);
         }
     }
 }

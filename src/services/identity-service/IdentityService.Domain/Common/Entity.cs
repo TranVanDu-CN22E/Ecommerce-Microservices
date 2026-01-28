@@ -1,9 +1,9 @@
 ﻿using System;
 namespace IdentityService.Domain.Common
 {
-    public abstract class Entity<TId>
+    public abstract class Entity<TKey>
     {
-        public TId Id { get; protected set; } = default!;
+        public TKey Id { get; protected set; } = default!;
 
         private readonly List<IDomainEvent> _domainEvents = new();
         public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();

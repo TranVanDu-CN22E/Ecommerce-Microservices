@@ -24,7 +24,7 @@ namespace IdentityService.Infrastructure.Persistence.Repositories
             CancellationToken ct)
         {
             var tokens = await _db.RefreshTokens
-                .Where(x => x.UserId.ToString() == userId && !x.IsRevoked)
+                .Where(x => x.UserId == UserId.Create(Guid.Parse(userId)) && !x.IsRevoked)
                 .ToListAsync(ct);
 
             foreach (var token in tokens)

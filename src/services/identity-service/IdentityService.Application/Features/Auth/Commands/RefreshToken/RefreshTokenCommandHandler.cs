@@ -42,7 +42,7 @@ namespace IdentityService.Application.Features.Auth.Commands.RefreshToken
             var newRefreshToken = _jwtTokenService.GenerateRefreshToken();
 
             await _refreshTokenRep.RevokeAllUserTokensAsync(request.UserId, cancellationToken);
-            await _refreshTokenRep.AddAsync(accessToken, newRefreshToken, cancellationToken);
+            await _refreshTokenRep.AddAsync(request.UserId, newRefreshToken, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return Result<RefreshTokenResponse>.Success( new RefreshTokenResponse(
                 accessToken,

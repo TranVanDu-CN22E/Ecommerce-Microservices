@@ -1,6 +1,7 @@
 ﻿using IdentityService.Domain.Aggregates.ProvinceAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Text.Json;
 
 namespace IdentityService.Infrastructure.Persistence.Configurations
 {
@@ -10,7 +11,12 @@ namespace IdentityService.Infrastructure.Persistence.Configurations
         {
             builder.ToTable("Provinces");
             builder.HasKey(p => p.Id);
-            builder.Property(p => p.Id).ValueGeneratedNever();
+            builder.Property(x => x.Id)
+                .HasConversion(
+                    id => id.Value,
+                    value => ProvinceId.Create(value)
+                )
+                .ValueGeneratedNever();
 
             builder.Property(p => p.ProvinceName)
                 .HasMaxLength(100)
@@ -19,21 +25,27 @@ namespace IdentityService.Infrastructure.Persistence.Configurations
             // Load JSON file
             var path = Path.Combine(AppContext.BaseDirectory, "Data", "provinces.json");
             Console.WriteLine(path);
+            if (File.Exists(path))
+            {
+                var json = File.ReadAllText(path);
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var provinces = JsonSerializer.Deserialize<List<ProvinceSeedModel>>(json, options);
 
-            var json = File.ReadAllText(path);
-            var provinces = System.Text.Json.JsonSerializer.Deserialize<List<ProvinceSeedModel>>(json);
+                var seedData = provinces!.Select(p =>
+                    new { Id = ProvinceId.Create(p.id), ProvinceName = p.name }
+                );
 
-            // Convert to EF data format
-            var seedData = provinces!.Select(p =>
-                new { Id = p.Id, Name = p.Name }
-            );
-
-            builder.HasData(seedData);
+                builder.HasData(seedData);
+            }
+            else
+            {
+                Console.WriteLine("provinces.json not found: " + path);
+            }
         }
     }
     public record ProvinceSeedModel
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public int id { get; set; }
+        public string name { get; set; }
     }
 }

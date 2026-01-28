@@ -3,7 +3,7 @@ using IdentityService.Domain.Common;
 
 namespace IdentityService.Domain.Aggregates.UserAggregate
 {
-    public sealed class UserAddress : AggregateRoot<Guid>
+    public sealed class UserAddress : AggregateRoot<UserAddressId>
     {
         public UserId UserId { get; private set; } = default!;
         public User User { get; private set; } = default!;
@@ -15,7 +15,7 @@ namespace IdentityService.Domain.Aggregates.UserAggregate
         private UserAddress() { }
         private UserAddress(UserAddressId userAddressId, UserId userId, string address, string note, UserPhone phone, ProvinceId provinceId)
         {
-            Id = userAddressId.Value;
+            Id = userAddressId;
             UserId = userId;
             Address = address;
             Note = note;

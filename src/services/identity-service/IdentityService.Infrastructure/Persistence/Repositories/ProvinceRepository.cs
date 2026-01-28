@@ -16,7 +16,7 @@ namespace IdentityService.Infrastructure.Persistence.Repositories
 
         public async Task<Province?> GetProvinceById(int id, CancellationToken ct)
         {
-            return await _db.Provinces.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, ct);
+            return await _db.Provinces.AsNoTracking().FirstOrDefaultAsync(x => x.Id.Value == id, ct);
         }
     }
 }

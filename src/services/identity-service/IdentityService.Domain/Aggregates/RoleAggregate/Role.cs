@@ -3,7 +3,7 @@ using IdentityService.Domain.Common;
 
 namespace IdentityService.Domain.Aggregates.RoleAggregate
 {
-    public sealed class Role : AggregateRoot<Guid>
+    public sealed class Role : AggregateRoot<RoleId>
     {
         public string RoleName { get; private set; } = string.Empty;
         public List<Guid> Permissions { get; private set; } = new();
@@ -11,7 +11,7 @@ namespace IdentityService.Domain.Aggregates.RoleAggregate
         private Role() { }
         private Role(RoleId roleId, string roleName) 
         {
-            Id = roleId.Value;
+            Id = roleId;
             RoleName = roleName;
         }
         public static Role Create(string name) => new Role(RoleId.New(), name);

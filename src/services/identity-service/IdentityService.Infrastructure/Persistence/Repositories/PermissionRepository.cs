@@ -11,7 +11,7 @@ namespace IdentityService.Infrastructure.Persistence.Repositories
         public PermissionRepository(IdentityDbContext db) => _db = db;
 
         public Task<Permission?> GetByIdAsync(string id, CancellationToken ct)
-            => _db.Permissions.AsNoTracking().FirstOrDefaultAsync(p => p.Id.ToString() == id, ct);
+            => _db.Permissions.AsNoTracking().FirstOrDefaultAsync(p => p.Id == PermissionId.Create(Guid.Parse(id)), ct);
 
         public async Task AddAsync(string name, CancellationToken ct)
         {

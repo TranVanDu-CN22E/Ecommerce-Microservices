@@ -11,7 +11,7 @@ namespace IdentityService.Infrastructure.Persistence.Repositories
         public RoleRepository(IdentityDbContext db) => _db = db;
 
         public Task<Role?> GetByIdAsync(string id, CancellationToken ct)
-            => _db.Roles.AsNoTracking().FirstOrDefaultAsync(r => r.Id.ToString() == id, ct);
+            => _db.Roles.AsNoTracking().FirstOrDefaultAsync(r => r.Id == RoleId.Create(Guid.Parse(id)), ct);
 
         public async Task AddAsync(string name, CancellationToken ct)
         {

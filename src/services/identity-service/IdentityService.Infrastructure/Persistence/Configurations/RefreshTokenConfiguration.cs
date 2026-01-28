@@ -1,4 +1,5 @@
-﻿using IdentityService.Domain.Aggregates.RefreshTokenAggregate;
+﻿using IdentityService.Domain.Aggregates.ProvinceAggregate;
+using IdentityService.Domain.Aggregates.RefreshTokenAggregate;
 using IdentityService.Domain.Aggregates.UserAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -11,7 +12,12 @@ namespace IdentityService.Infrastructure.Persistence.Configurations
         {
             builder.ToTable("RefreshTokens");
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).ValueGeneratedNever();
+            builder.Property(x => x.Id)
+                .HasConversion(
+                    id => id.Value,
+                    value => RefreshTokenId.Create(value)
+                )
+                .ValueGeneratedNever();
 
             builder.Property(x => x.UserId)
                    .HasConversion(

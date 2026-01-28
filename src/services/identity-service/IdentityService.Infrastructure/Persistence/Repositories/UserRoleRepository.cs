@@ -20,7 +20,7 @@ namespace IdentityService.Infrastructure.Persistence.Repositories
         }
         public async Task<Task> RemoveAsync(string roleId, CancellationToken cancellationToken = default)
         {
-            var role = await _identityDbContext.UserRoles.FirstOrDefaultAsync(x => x.RoleId.ToString() == roleId, cancellationToken);
+            var role = await _identityDbContext.UserRoles.FirstOrDefaultAsync(x => x.RoleId == RoleId.Create(Guid.Parse(roleId)), cancellationToken);
             if (role != null)
             {
                 _identityDbContext.UserRoles.Remove(role);
@@ -31,18 +31,18 @@ namespace IdentityService.Infrastructure.Persistence.Repositories
 
         public async Task<bool> ExistsAsync(string userId, string roleId, CancellationToken cancellationToken = default)
         {
-            return await _identityDbContext.UserRoles.AnyAsync(x => x.UserId.ToString() == userId && x.RoleId.ToString() == roleId , cancellationToken);
+            return await _identityDbContext.UserRoles.AnyAsync(x => x.UserId == UserId.Create(Guid.Parse(userId)) && x.RoleId == RoleId.Create(Guid.Parse(roleId)) , cancellationToken);
         }
 
         public async Task<UserRole?> GetAsync(string userId, string roleId, CancellationToken cancellationToken = default)
         {
-            return await _identityDbContext.UserRoles.FirstOrDefaultAsync(x => x.UserId.ToString() == userId && x.RoleId.ToString() == roleId, cancellationToken);
+            return await _identityDbContext.UserRoles.FirstOrDefaultAsync(x => x.UserId == UserId.Create(Guid.Parse(userId)) && x.RoleId == RoleId.Create(Guid.Parse(roleId)), cancellationToken);
         }
 
         public async Task<List<RoleId>> GetRoleIdsByUserAsync(string userId, CancellationToken cancellationToken = default)
         {
             return await _identityDbContext.UserRoles
-                .Where(x => x.UserId.ToString() == userId)
+                .Where(x => x.UserId == UserId.Create(Guid.Parse(userId)))
                 .Select(x => x.RoleId)
                 .ToListAsync(cancellationToken);
         }

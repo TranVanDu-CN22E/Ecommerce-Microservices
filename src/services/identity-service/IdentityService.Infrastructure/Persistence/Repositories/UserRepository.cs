@@ -11,11 +11,17 @@ namespace IdentityService.Infrastructure.Persistence.Repositories
         public UserRepository(IdentityDbContext db) => _db = db;
 
         public Task<User?> GetByEmailAsync(string email, CancellationToken ct)
-            => _db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Email.ToString() == email, ct);
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return Task.FromResult<User?>(null);
+
+            var normalized = email.Trim().ToLowerInvariant();
+            return _db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Email.Value == normalized, ct);
+        }
 
         public Task<User?> GetByIdAsync(string userId, CancellationToken ct)
         { 
-            return _db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id.ToString() == userId, ct);
+            return _db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == UserId.Create(Guid.Parse(userId)), ct);
         }
 
         public async Task<User> AddAsync(string email, string phone, string username, string passwordHash, CancellationToken ct)
@@ -31,14 +37,14 @@ namespace IdentityService.Infrastructure.Persistence.Repositories
         public async Task<User?> UpdateAsync(string userId, string? username, string? password, string? email, string? phone, string? reasonBan, string? reasonUnban, bool? resetLogin, CancellationToken ct = default)
         {
             if (userId == null) throw new ArgumentNullException("userId");
-            var user = await _db.Users.FirstOrDefaultAsync(x => x.Id.ToString() == userId, ct);
+            var user = await _db.Users.FirstOrDefaultAsync(x => x.Id == UserId.Create(Guid.Parse(userId)), ct);
             if (user != null)
             {
                 user.Update(
-                    UserEmail.Create(email),
-                    UserPhone.Create(phone),
-                    UserName.Create(username),
-                    PasswordHash.Create(password)
+                    email is null ? null : UserEmail.Create(email),
+                    phone is null ? null : UserPhone.Create(phone),
+                    username is null ? null : UserName.Create(username),
+                    password is null ? null : PasswordHash.Create(password)
                     );
                 if (reasonBan != null) user.Ban(reasonBan);
                 if (reasonUnban != null) user.Unban(reasonUnban);

@@ -4,7 +4,7 @@ using IdentityService.Domain.Common;
 
 namespace IdentityService.Domain.Aggregates.UserAggregate
 {
-    public sealed class User : AggregateRoot<Guid>
+    public sealed class User : AggregateRoot<UserId>
     {
         public UserEmail Email { get; private set; } = default!;
         public UserPhone Phone { get; private set; } = default!;
@@ -25,14 +25,14 @@ namespace IdentityService.Domain.Aggregates.UserAggregate
 
         private User(UserId userId, UserEmail email, UserPhone phone, UserName userName, PasswordHash passwordHash)
         {
-            Id = userId.Value;
+            Id = userId;
             Email = email;
             Phone = phone;
             UserName = userName;
             PasswordHash = passwordHash;
             CreatedAt = DateTime.UtcNow;
 
-            AddDomainEvent(new UserCreatedDomainEvent(Id, Email.Value));
+            AddDomainEvent(new UserCreatedDomainEvent(Id.Value, Email.Value));
         }
 
         public static User Create(UserEmail email, UserPhone phone, UserName userName, PasswordHash passwordHash)
@@ -50,19 +50,19 @@ namespace IdentityService.Domain.Aggregates.UserAggregate
         {
             IsBanned = true;
             BannedUntil = DateTime.UtcNow;
-            AddDomainEvent(new UserBannedDomainEvent(Id, reason, BannedUntil));
+            AddDomainEvent(new UserBannedDomainEvent(Id.Value, reason, BannedUntil));
         }
         public void Unban(string reason)
         {
             IsBanned = false;
-            AddDomainEvent(new UserBannedDomainEvent(Id, reason, DateTime.UtcNow));
+            AddDomainEvent(new UserBannedDomainEvent(Id.Value, reason, DateTime.UtcNow));
         }
 
         public void Lock(string reason)
         {
             IsLocked = true;
             LockedUntil = DateTime.UtcNow.AddHours(12);
-            AddDomainEvent(new UserLockedDomainEvent(Id, reason, LockedUntil));
+            AddDomainEvent(new UserLockedDomainEvent(Id.Value, reason, LockedUntil));
         }
 
         public bool CanLogin()

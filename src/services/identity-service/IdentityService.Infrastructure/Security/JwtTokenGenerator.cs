@@ -13,11 +13,15 @@ namespace IdentityService.Infrastructure.Security
     public class JwtTokenGenerator : IJwtTokenService
     {
         private readonly IConfiguration _config;
+        public JwtTokenGenerator(IConfiguration config)
+        {
+            _config = config;
+        }
         public string GenerateAccessToken(User user, List<RoleId>? roles)
         {
             var claims = new List<Claim>
             {
-                new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new(JwtRegisteredClaimNames.Sub, user.Id.Value.ToString()),
                 new(JwtRegisteredClaimNames.Jti, Uuid7.NewUuid7().ToString()),
                 new(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
@@ -25,7 +29,7 @@ namespace IdentityService.Infrastructure.Security
             {
                 foreach (var role in roles)
                 {
-                    claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
+                    claims.Add(new Claim(ClaimTypes.Role, role.Value.ToString()));
                 }
             }
             var key = new SymmetricSecurityKey(

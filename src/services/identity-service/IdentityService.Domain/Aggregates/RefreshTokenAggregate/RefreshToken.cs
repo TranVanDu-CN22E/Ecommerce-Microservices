@@ -3,7 +3,7 @@ using IdentityService.Domain.Common;
 
 namespace IdentityService.Domain.Aggregates.RefreshTokenAggregate
 {
-    public sealed class RefreshToken : AggregateRoot<Guid>
+    public sealed class RefreshToken : AggregateRoot<RefreshTokenId>
     {
         public UserId UserId { get; private set; }
         public User User { get; private set; }
@@ -14,7 +14,7 @@ namespace IdentityService.Domain.Aggregates.RefreshTokenAggregate
         private RefreshToken() { }
         private RefreshToken(RefreshTokenId refreshTokenId, UserId userId ,string token, DateTime expiresAt)
         {
-            Id = refreshTokenId.Value;
+            Id = refreshTokenId;
             UserId = userId;
             Token = token ?? string.Empty;
             ExpiresAt = expiresAt;
@@ -29,7 +29,7 @@ namespace IdentityService.Domain.Aggregates.RefreshTokenAggregate
             IsRevoked = true;
             RevokedAt = DateTime.UtcNow;
 
-            AddDomainEvent(new RefreshTokenRevokedEvent(Id));
+            AddDomainEvent(new RefreshTokenRevokedEvent(Id.Value));
         }
 
         public bool IsExpired() => DateTime.UtcNow >= ExpiresAt;
