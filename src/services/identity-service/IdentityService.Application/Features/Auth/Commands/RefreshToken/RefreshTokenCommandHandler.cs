@@ -1,8 +1,6 @@
 ﻿using IdentityService.Application.Abstractions.Messaging;
 using IdentityService.Application.Abstractions.Services;
 using IdentityService.Application.Common;
-using IdentityService.Domain.Aggregates.RefreshTokenAggregate;
-using IdentityService.Domain.Aggregates.UserAggregate;
 using IdentityService.Domain.Interfaces;
 
 namespace IdentityService.Application.Features.Auth.Commands.RefreshToken
