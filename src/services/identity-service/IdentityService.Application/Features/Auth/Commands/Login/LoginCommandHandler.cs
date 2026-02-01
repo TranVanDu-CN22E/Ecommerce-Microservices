@@ -56,7 +56,8 @@ namespace IdentityService.Application.Features.Auth.Commands.Login
             return Result<LoginResponse>.Success(new LoginResponse(
                 accessToken,
                 refreshToken,
-                DateTime.UtcNow.AddMinutes(10)
+                DateTime.UtcNow.AddMinutes(10),
+                DateTime.UtcNow.AddDays(7)
             ));
         }
     }
