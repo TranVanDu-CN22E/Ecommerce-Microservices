@@ -22,8 +22,7 @@ namespace IdentityService.Infrastructure.Security
             var claims = new List<Claim>
             {
                 new(JwtRegisteredClaimNames.Sub, user.Id.Value.ToString()),
-                new(JwtRegisteredClaimNames.Jti, Uuid7.NewUuid7().ToString()),
-                new(ClaimTypes.NameIdentifier, user.Id.ToString())
+                new(JwtRegisteredClaimNames.Jti, Uuid7.NewUuid7().ToString())
             };
             if (roles.Any())
             {
@@ -37,13 +36,13 @@ namespace IdentityService.Infrastructure.Security
             );
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(
-                    int.Parse(_config["Jwt:AccessTokenExpireMinutes"]??"10")
-                ),
-                signingCredentials: creds
+                    issuer: _config["Jwt:Issuer"],
+                    audience: _config["Jwt:Audience"],
+                    claims: claims,
+                    expires: DateTime.UtcNow.AddMinutes(
+                        int.Parse(_config["Jwt:AccessTokenExpireMinutes"]??"10")
+                    ),
+                    signingCredentials: creds
                 );
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

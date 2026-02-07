@@ -1,36 +1,36 @@
+using IdentityService.Application.Abstractions.Services;
 using Microsoft.Extensions.Caching.Distributed;
-using IdentityService.Application.Abstractions;
+using StackExchange.Redis;
 using System.Text.Json;
 
 namespace IdentityService.Infrastructure.Caching
 {
     public class RedisCacheService : ICacheService
     {
-        private readonly IDistributedCache _cache;
+        private readonly IDatabase _database;
+        private readonly IConnectionMultiplexer _connectionMultiplexer;
 
-        public RedisCacheService(IDistributedCache cache)
+        public RedisCacheService(IConnectionMultiplexer connectionMultiplexer)
         {
-            _cache = cache;
+            _connectionMultiplexer = connectionMultiplexer;
+            _database = _connectionMultiplexer.GetDatabase();
         }
 
         public async Task<T?> GetAsync<T>(string key, CancellationToken ct = default)
         {
-            var cached = await _cache.GetStringAsync(key, ct);
-            return cached is null ? default : JsonSerializer.Deserialize<T>(cached);
+            var value = await _database.StringGetAsync(key);
+            if (value.IsNullOrEmpty)
+                return default;
+            return JsonSerializer.Deserialize<T>(value!);
         }
 
         public async Task SetAsync<T>(string key, T value, TimeSpan? expire = null, CancellationToken ct = default)
         {
-            var data = JsonSerializer.Serialize(value);
-
-            var options = new DistributedCacheEntryOptions();
-            if (expire != null)
-                options.SetAbsoluteExpiration(expire.Value);
-
-            await _cache.SetStringAsync(key, data, options, ct);
+            var serializedValue = JsonSerializer.Serialize(value);
+            await _database.StringSetAsync(key, serializedValue, (Expiration)expire);
         }
 
-        public Task RemoveAsync(string key, CancellationToken ct = default)
-            => _cache.RemoveAsync(key, ct);
+        public async Task RemoveAsync(string key, CancellationToken ct = default)
+            => await _database.KeyDeleteAsync(key);
     }
 }

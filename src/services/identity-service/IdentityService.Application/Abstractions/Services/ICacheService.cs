@@ -1,4 +1,4 @@
-﻿namespace IdentityService.Application.Abstractions
+﻿namespace IdentityService.Application.Abstractions.Services
 {
     public interface ICacheService
     {

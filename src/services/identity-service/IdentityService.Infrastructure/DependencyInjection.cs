@@ -1,5 +1,6 @@
 ﻿using IdentityService.Application.Abstractions.Services;
 using IdentityService.Domain.Interfaces;
+using IdentityService.Infrastructure.Caching;
 using IdentityService.Infrastructure.Mail;
 using IdentityService.Infrastructure.Persistence;
 using IdentityService.Infrastructure.Persistence.Repositories;
@@ -26,6 +27,8 @@ namespace IdentityService.Infrastructure
             services.AddScoped<IJwtTokenService, JwtTokenGenerator>();
             services.Configure<EmailSetting>(configuration.GetSection("Email"));
             services.AddScoped<IEmailService, EmailSender>();
+
+            services.AddSingleton<ICacheService, RedisCacheService>();
             return services;
         }
     }

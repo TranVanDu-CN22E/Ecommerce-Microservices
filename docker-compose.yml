@@ -5,6 +5,8 @@ networks:
 
 volumes:
   pg_identity: {}
+  redis-data:
+    driver: local
 
 
 services:
@@ -20,6 +22,21 @@ services:
       - api-gateway
     networks:
       - evnet
+  redis:
+    image: redis:7-alpine
+    container_name: identity-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - evnet
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
 
   api-gateway:
     image: api-gateway:latest
