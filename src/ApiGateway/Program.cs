@@ -24,6 +24,8 @@ try {
     builder.Services.AddGatewayRateLimiting(builder.Configuration);
     builder.Services.AddGatewayHealthChecks(builder.Configuration);
 
+
+
     builder.Services.AddHttpClient();
     builder.Services.AddEndpointsApiExplorer();
 
