@@ -135,7 +135,7 @@ namespace ApiGateway.Extensions
 
                 options.AddPolicy("PerUserRateLimit", context =>
                 {
-                    var userId = context.User?.FindFirst("userId")?.Value ?? "anonymous";
+                    var userId = context.User?.FindFirst("sub")?.Value ?? "anonymous";
 
                     return RateLimitPartition.GetFixedWindowLimiter(
                         userId,

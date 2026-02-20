@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityService.Api", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway", "src\ApiGateway\ApiGateway.csproj", "{1C66F94B-C20A-41BA-B4EB-B0C4C7083741}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogService.Domain", "src\services\catalog-service\CatalogService.Domain\CatalogService.Domain.csproj", "{ED79439A-09F7-4F1B-9016-50A04ABE1C07}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{1C66F94B-C20A-41BA-B4EB-B0C4C7083741}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C66F94B-C20A-41BA-B4EB-B0C4C7083741}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C66F94B-C20A-41BA-B4EB-B0C4C7083741}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED79439A-09F7-4F1B-9016-50A04ABE1C07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED79439A-09F7-4F1B-9016-50A04ABE1C07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED79439A-09F7-4F1B-9016-50A04ABE1C07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED79439A-09F7-4F1B-9016-50A04ABE1C07}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

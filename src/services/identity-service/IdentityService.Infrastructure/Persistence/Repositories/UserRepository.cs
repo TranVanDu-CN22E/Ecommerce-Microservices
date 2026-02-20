@@ -15,8 +15,7 @@ namespace IdentityService.Infrastructure.Persistence.Repositories
             if (string.IsNullOrWhiteSpace(email))
                 return Task.FromResult<User?>(null);
 
-            var normalized = email.Trim().ToLowerInvariant();
-            return _db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Email.Value == normalized, ct);
+            return _db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Email == UserEmail.Create(email), ct);
         }
 
         public Task<User?> GetByIdAsync(string userId, CancellationToken ct)
