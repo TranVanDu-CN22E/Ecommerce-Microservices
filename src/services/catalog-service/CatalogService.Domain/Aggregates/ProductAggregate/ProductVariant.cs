@@ -4,8 +4,8 @@ public sealed class ProductVariant
 {
     private readonly List<VariantAttribute> _attributes = new();
 
-    public ProductVariantId Id { get; private set; }
-    public ProductSku Sku { get; private set; } // Unique identifier for the variant, e.g., "RED-MEDIUM"
+    public ProductVariantId ProductVariantId { get; private set; }
+    public ProductSku ProductSku { get; private set; } // Unique identifier for the variant, e.g., "RED-MEDIUM"
     public Money Price { get; private set; }
     public Money? OriginalPrice { get; private set; }
     public IReadOnlyCollection<VariantAttribute> Attributes => _attributes.AsReadOnly();
@@ -27,8 +27,8 @@ public sealed class ProductVariant
         if (price.Amount <= 0)
             throw new ArgumentException("Price must be greater than zero");
 
-        Id = id;
-        Sku = sku;
+        ProductVariantId = id;
+        ProductSku = sku;
         Price = price;
         OriginalPrice = originalPrice;
         _attributes.AddRange(attributes);
@@ -39,13 +39,13 @@ public sealed class ProductVariant
 
     internal void UpdatePrice(Money? newPrice, Money? newOriginalPrice)
     {
-        if (!newPrice.HasValue)
+        if (newPrice is null)
             throw new ArgumentNullException(nameof(newPrice), "Price must not be null");
 
-        if (newPrice.Value.Amount <= 0)
+        if (newPrice.Amount <= 0)
             throw new ArgumentException("Price must be greater than zero");
 
-        Price = newPrice.Value;
+        Price = newPrice;
         OriginalPrice = newOriginalPrice;
     }
 

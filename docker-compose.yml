@@ -5,6 +5,7 @@ networks:
 
 volumes:
   pg_identity: {}
+  pg_catalog: {}
   redis-data:
     driver: local
 
@@ -80,5 +81,33 @@ services:
       - identity-db
     ports:
       - "8103:8080" 
+    networks: [evnet]
+    restart: unless-stopped
+
+  catalog-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${CATALOG_DB_USER}
+      POSTGRES_PASSWORD: ${CATALOG_DB_PASSWORD}
+      POSTGRES_DB: ${CATALOG_DB_NAME}
+    ports:
+      - "5436:5432"   # để connect từ host
+    volumes:
+      - pg_catalog:/var/lib/postgresql/data
+    networks: [evnet]
+  catalog-api:
+    build:
+      context: .
+      dockerfile: src/services/catalog-service/CatalogService.Api/Dockerfile
+    expose:
+      - "8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__Default: "Host=catalog-db;Port=5432;Database=${CATALOG_DB_NAME};Username=${CATALOG_DB_USER};Password=${CATALOG_DB_PASSWORD}"
+    depends_on:
+      - catalog-db
+    ports:
+      - "8104:8080"
     networks: [evnet]
     restart: unless-stopped

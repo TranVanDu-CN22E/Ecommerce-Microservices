@@ -79,7 +79,7 @@ namespace CatalogService.Domain.Aggregates.ProductAggregate
         }
         public ProductVariant AddVariant(ProductSku sku, Money price, Money? originalPrice, IEnumerable<VariantAttribute> attributes, string? imageUrl)
         {
-            if (Variants.Any(v => v.Sku == sku))
+            if (Variants.Any(v => v.ProductSku == sku))
                 throw new InvalidOperationException($"Variant with SKU '{sku.Value}' already exists.");
 
             var variant = new ProductVariant(ProductVariantId.New(), sku, price, originalPrice, attributes, imageUrl, true);
@@ -122,7 +122,7 @@ namespace CatalogService.Domain.Aggregates.ProductAggregate
             return activeVariants.Min(v => v.Price);
         }
         private ProductVariant GetVariantOrThrow(ProductVariantId variantId)
-            => Variants.FirstOrDefault(v => v.Id == variantId)
+            => Variants.FirstOrDefault(v => v.ProductVariantId == variantId)
                ?? throw new InvalidOperationException($"Variant '{variantId.Value}' not found.");
     }
 }

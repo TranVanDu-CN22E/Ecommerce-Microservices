@@ -1,7 +1,15 @@
 ﻿namespace CatalogService.Domain.Aggregates.ProductAggregate
 {
-    public readonly record struct Money (decimal Amount, string Currency)
+    public sealed record Money
     {
+        public decimal Amount { get; init; }
+        public string Currency { get; init; }
+        private Money() { }
+        private Money(decimal amount, string currency)
+        {
+            Amount = amount;
+            Currency = currency;
+        }
         public static Money Create(decimal amount, string currency)
         {
             if (amount < 0)

@@ -1,5 +1,4 @@
 ﻿using IdentityService.Application;
-using IdentityService.Application.Abstractions.Services;
 using IdentityService.Infrastructure;
 using IdentityService.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

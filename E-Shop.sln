@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway", "src\ApiGatewa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogService.Domain", "src\services\catalog-service\CatalogService.Domain\CatalogService.Domain.csproj", "{ED79439A-09F7-4F1B-9016-50A04ABE1C07}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogService.Infrastructure", "src\services\catalog-service\CatalogService.Infrastructure\CatalogService.Infrastructure.csproj", "{FB7CC841-05E5-41B4-B43E-F32B3CE01E19}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogService.Api", "src\services\catalog-service\CatalogService.Api\CatalogService.Api.csproj", "{C414C2BA-0066-4F37-80BF-6A3827476071}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,14 @@ Global
 		{ED79439A-09F7-4F1B-9016-50A04ABE1C07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED79439A-09F7-4F1B-9016-50A04ABE1C07}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED79439A-09F7-4F1B-9016-50A04ABE1C07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB7CC841-05E5-41B4-B43E-F32B3CE01E19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB7CC841-05E5-41B4-B43E-F32B3CE01E19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB7CC841-05E5-41B4-B43E-F32B3CE01E19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB7CC841-05E5-41B4-B43E-F32B3CE01E19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C414C2BA-0066-4F37-80BF-6A3827476071}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C414C2BA-0066-4F37-80BF-6A3827476071}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C414C2BA-0066-4F37-80BF-6A3827476071}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C414C2BA-0066-4F37-80BF-6A3827476071}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
