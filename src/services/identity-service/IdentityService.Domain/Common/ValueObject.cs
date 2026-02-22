@@ -6,10 +6,8 @@
 
         public override bool Equals(object? obj)
         {
-            if (obj is null || obj.GetType() != GetType())
+            if (obj is not ValueObject other)
                 return false;
-
-            var other = (ValueObject)obj;
 
             IEnumerator<object?> thisValues = GetEqualityComponents().GetEnumerator();
             IEnumerator<object?> otherValues = other.GetEqualityComponents().GetEnumerator();
