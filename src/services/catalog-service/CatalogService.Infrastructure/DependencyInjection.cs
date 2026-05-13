@@ -11,7 +11,7 @@ namespace CatalogService.Infrastructure
         {
             services.AddDbContext<CatalogDbContext>(o => o.UseNpgsql(configuration.GetConnectionString("Default")));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<ICatalogRepository, CategoryRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             return services;
         }

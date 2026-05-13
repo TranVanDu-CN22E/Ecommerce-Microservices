@@ -1,5 +1,5 @@
 ﻿using MediatR;
-namespace IdentityService.Application.Abstractions.Messaging
+namespace CatalogService.Application.Abstractions.Messaging
 {
     public interface ICommand<out TResponse> : IRequest<TResponse>
     {
