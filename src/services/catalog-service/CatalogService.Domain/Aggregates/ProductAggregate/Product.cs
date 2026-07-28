@@ -121,6 +121,10 @@ namespace CatalogService.Domain.Aggregates.ProductAggregate
                 throw new InvalidOperationException("No active variants available to determine price.");
             return activeVariants.Min(v => v.Price);
         }
+        public void UpdateThumbnail(string url)
+        {
+            ThumbnailUrl = url;
+        }
         private ProductVariant GetVariantOrThrow(ProductVariantId variantId)
             => Variants.FirstOrDefault(v => v.ProductVariantId == variantId)
                ?? throw new InvalidOperationException($"Variant '{variantId.Value}' not found.");

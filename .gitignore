@@ -55,4 +55,3 @@ nunit-*.xml
 
 # Visual Studio
 /.vs/
-appsettings.json

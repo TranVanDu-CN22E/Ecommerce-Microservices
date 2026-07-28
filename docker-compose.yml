@@ -48,7 +48,7 @@ services:
     ports:
       - "5000:80"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=Development 
       - ASPNETCORE_URLS=http://+:80
     networks:
       - evnet
@@ -74,7 +74,7 @@ services:
     expose:
       - "8080"
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_ENVIRONMENT: Development 
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__Default: "Host=identity-db;Port=5432;Database=${IDENTITY_DB_NAME};Username=${IDENTITY_DB_USER};Password=${IDENTITY_DB_PASSWORD}"
     depends_on:
@@ -102,12 +102,15 @@ services:
     expose:
       - "8080"
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_ENVIRONMENT: Development 
       ASPNETCORE_URLS: http://+:8080
+      StorageSettings__BasePath: /app/uploads
       ConnectionStrings__Default: "Host=catalog-db;Port=5432;Database=${CATALOG_DB_NAME};Username=${CATALOG_DB_USER};Password=${CATALOG_DB_PASSWORD}"
     depends_on:
       - catalog-db
     ports:
       - "8104:8080"
+    volumes:
+      - ./uploads:/app/uploads
     networks: [evnet]
     restart: unless-stopped

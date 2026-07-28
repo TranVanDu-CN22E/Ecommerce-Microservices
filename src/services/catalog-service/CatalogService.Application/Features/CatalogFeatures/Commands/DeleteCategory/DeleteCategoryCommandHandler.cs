@@ -3,7 +3,7 @@ using CatalogService.Application.Common;
 using CatalogService.Domain.Aggregates.CategoryAggregate;
 using CatalogService.Domain.Interfaces;
 
-namespace CatalogService.Application.Features.Catalog.Commands.DeleteCategory
+namespace CatalogService.Application.Features.CatalogFeatures.Commands.DeleteCategory
 {
     public class DeleteCategoryCommandHandler : ICommandHandler<DeleteCategoryCommand, Result<string>>
     {

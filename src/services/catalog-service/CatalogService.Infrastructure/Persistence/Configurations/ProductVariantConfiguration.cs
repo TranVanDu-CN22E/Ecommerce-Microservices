@@ -58,6 +58,7 @@ namespace CatalogService.Infrastructure.Persistence.Configurations
                 attr.WithOwner().HasForeignKey("ProductVariantId"); // FK về ProductVariant
                 attr.Property(a => a.Name).HasMaxLength(100).IsRequired();
                 attr.Property(a => a.Value).HasMaxLength(100).IsRequired();
+                attr.Property(a => a.StockQuantity).IsRequired();
                 attr.ToTable("ProductVariantAttributes"); // tên bảng riêng
             });
 

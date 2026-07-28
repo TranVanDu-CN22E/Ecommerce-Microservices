@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CatalogService.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Inittial : Migration
+    public partial class InitialDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -63,6 +63,7 @@ namespace CatalogService.Infrastructure.Migrations
                     PriceCurrency = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: false),
                     OriginalPriceAmount = table.Column<decimal>(type: "numeric(18,2)", nullable: true),
                     OriginalPriceCurrency = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: true),
+                    StockQuantity = table.Column<int>(type: "integer", nullable: false),
                     image_url = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     is_active = table.Column<bool>(type: "boolean", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -87,7 +88,8 @@ namespace CatalogService.Infrastructure.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Value = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                    Value = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    StockQuantity = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -3,9 +3,9 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using CatalogService.Application.Features.Catalog.Commands.CreateCategory;
-using CatalogService.Application.Features.Catalog.Commands.UpdateCategory;
-using CatalogService.Application.Features.Catalog.Commands.DeleteCategory;
+using CatalogService.Application.Features.CatalogFeatures.Commands.CreateCategory;
+using CatalogService.Application.Features.CatalogFeatures.Commands.UpdateCategory;
+using CatalogService.Application.Features.CatalogFeatures.Commands.DeleteCategory;
 
 namespace CatalogService.Api.Controllers
 {

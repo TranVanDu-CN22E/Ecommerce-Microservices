@@ -22,6 +22,7 @@ namespace CatalogService.Application
             //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
             // services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehavior<,>));
+            services.AddAutoMapper(cfg => cfg.AddMaps(assembly));
             return services;
         }
     }

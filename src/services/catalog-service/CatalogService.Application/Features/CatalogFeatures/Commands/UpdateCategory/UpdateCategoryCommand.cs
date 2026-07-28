@@ -1,7 +1,7 @@
 ﻿using CatalogService.Application.Abstractions.Messaging;
 using CatalogService.Application.Common;
 
-namespace CatalogService.Application.Features.Catalog.Commands.UpdateCategory
+namespace CatalogService.Application.Features.CatalogFeatures.Commands.UpdateCategory
 {
     public sealed record UpdateCategoryCommand(
         string Id,

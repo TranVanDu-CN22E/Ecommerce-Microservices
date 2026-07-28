@@ -14,10 +14,11 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/services/catalog-service/CatalogService.Api/CatalogService.Api.csproj", "src/services/catalog-service/CatalogService.Api/"]
 COPY ["src/services/catalog-service/CatalogService.Infrastructure/CatalogService.Infrastructure.csproj", "src/services/catalog-service/CatalogService.Infrastructure/"]
+COPY ["src/services/catalog-service/CatalogService.Application/CatalogService.Application.csproj", "src/services/catalog-service/CatalogService.Application/"]
 COPY ["src/services/catalog-service/CatalogService.Domain/CatalogService.Domain.csproj", "src/services/catalog-service/CatalogService.Domain/"]
 RUN dotnet restore "./src/services/catalog-service/CatalogService.Api/CatalogService.Api.csproj"
 COPY . .
-WORKDIR "/src/src/services/catalog-service/CatalogService.Api"
+WORKDIR "./src/services/catalog-service/CatalogService.Api"
 RUN dotnet build "./CatalogService.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage

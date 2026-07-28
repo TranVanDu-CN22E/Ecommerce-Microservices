@@ -162,6 +162,9 @@ namespace CatalogService.Infrastructure.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("ProductSku");
 
+                    b.Property<int>("StockQuantity")
+                        .HasColumnType("integer");
+
                     b.HasKey("ProductVariantId");
 
                     b.HasIndex("ProductId");
@@ -191,6 +194,9 @@ namespace CatalogService.Infrastructure.Migrations
                                 .IsRequired()
                                 .HasMaxLength(100)
                                 .HasColumnType("character varying(100)");
+
+                            b1.Property<int>("StockQuantity")
+                                .HasColumnType("integer");
 
                             b1.Property<string>("Value")
                                 .IsRequired()

@@ -1,6 +1,8 @@
-﻿using CatalogService.Domain.Interfaces;
+﻿using CatalogService.Application.Interfaces.Storage;
+using CatalogService.Domain.Interfaces;
 using CatalogService.Infrastructure.Persistence;
 using CatalogService.Infrastructure.Persistence.Repositories;
+using CatalogService.Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
 
 namespace CatalogService.Infrastructure
@@ -13,6 +15,10 @@ namespace CatalogService.Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            // Đảm bảo tên chuỗi "StorageSettings" trùng khớp chính xác với Key trong file appsettings.json
+            services.Configure<LocalFileStorageOptions>(configuration.GetSection("StorageSettings"));
+            services.AddTransient<ILocalFileStorage, LocalFileStorage>();
+
             return services;
         }
     }

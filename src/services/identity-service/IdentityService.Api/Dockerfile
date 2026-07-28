@@ -18,7 +18,7 @@ COPY ["src/services/identity-service/IdentityService.Domain/IdentityService.Doma
 COPY ["src/services/identity-service/IdentityService.Infrastructure/IdentityService.Infrastructure.csproj", "src/services/identity-service/IdentityService.Infrastructure/"]
 RUN dotnet restore "./src/services/identity-service/IdentityService.Api/IdentityService.Api.csproj"
 COPY . .
-WORKDIR "/src/src/services/identity-service/IdentityService.Api"
+WORKDIR "./src/services/identity-service/IdentityService.Api"
 RUN dotnet build "./IdentityService.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
