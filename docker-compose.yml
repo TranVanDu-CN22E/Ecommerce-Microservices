@@ -6,6 +6,7 @@ networks:
 volumes:
   pg_identity: {}
   pg_catalog: {}
+  uploads: {}
   redis-data:
     driver: local
 
@@ -73,9 +74,10 @@ services:
       dockerfile: src/services/identity-service/IdentityService.Api/Dockerfile
     expose:
       - "8080"
+      - "8081"
     environment:
       ASPNETCORE_ENVIRONMENT: Development 
-      ASPNETCORE_URLS: http://+:8080
+      ASPNETCORE_URLS: http://+:8080; https://+:8081
       ConnectionStrings__Default: "Host=identity-db;Port=5432;Database=${IDENTITY_DB_NAME};Username=${IDENTITY_DB_USER};Password=${IDENTITY_DB_PASSWORD}"
     depends_on:
       - identity-db
@@ -104,13 +106,14 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development 
       ASPNETCORE_URLS: http://+:8080
-      StorageSettings__BasePath: /app/uploads
+      GrpcSettings__IdentityServiceUrl=http://identity-service:8081
+      LocalFileStorage__BasePath: "wwwroot/uploads"
       ConnectionStrings__Default: "Host=catalog-db;Port=5432;Database=${CATALOG_DB_NAME};Username=${CATALOG_DB_USER};Password=${CATALOG_DB_PASSWORD}"
     depends_on:
       - catalog-db
     ports:
       - "8104:8080"
     volumes:
-      - ./uploads:/app/uploads
+      - uploads:/app/wwwroot/uploads
     networks: [evnet]
     restart: unless-stopped

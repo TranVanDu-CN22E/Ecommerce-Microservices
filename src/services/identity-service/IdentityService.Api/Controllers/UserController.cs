@@ -1,4 +1,5 @@
 ﻿using IdentityService.Application.Features.User.Queries.GetCurrentUser;
+using IdentityService.Application.Features.User.Queries.GetUserById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -31,6 +32,21 @@ namespace IdentityService.Api.Controllers
             if (result.IsFailure)
             {
                 return BadRequest(result.Errors);
+            }
+            return Ok(result.Value);
+        }
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetUserById([FromRoute] string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User ID is required.");
+            }
+            var query = new GetUserByIdQuery(userId);
+            var result = await _mediator.Send(query);
+            if (result.IsFailure)
+            {
+                return NotFound(result.Errors);
             }
             return Ok(result.Value);
         }

@@ -2,6 +2,7 @@
 using IdentityService.Infrastructure;
 using IdentityService.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 using System.Text;
@@ -21,7 +22,14 @@ builder.Services.AddStackExchangeRedisCache(options =>
     options.Configuration = builder.Configuration.GetConnectionString("Redis");
     options.InstanceName = "IdentityService_";
 });
+builder.WebHost.ConfigureKestrel(options =>
+{
+    // Port 8080: REST + Swagger
+    options.ListenAnyIP(8080, o => o.Protocols = HttpProtocols.Http1);
 
+    // Port 8081: gRPC (HTTP/2 required)
+    options.ListenAnyIP(8081, o => o.Protocols = HttpProtocols.Http2);
+});
 builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
 {
     var logger = sp.GetRequiredService<ILogger<Program>>();

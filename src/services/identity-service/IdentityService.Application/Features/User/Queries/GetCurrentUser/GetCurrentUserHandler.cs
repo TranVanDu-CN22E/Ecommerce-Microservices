@@ -19,7 +19,7 @@ namespace IdentityService.Application.Features.User.Queries.GetCurrentUser
 
         public async Task<Result<UserResponse>> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
         {
-            var cacheKey = $"user:{request.UserId}";
+            var cacheKey = $"GetCurrentUserQuery:{request.UserId}";
             var cachedUser = await _cacheService.GetAsync<UserResponse>(cacheKey, cancellationToken);
             if (cachedUser != null)
             {

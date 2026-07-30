@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Chỉ cần package này là đủ -->
+		<PackageReference Include="Grpc.AspNetCore" Version="2.57.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\services\identity-service\IdentityService.Application\IdentityService.Application.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Trỏ đến file proto -->
+		<Protobuf Include="Protos\user.proto" GrpcServices="Both" />
+	</ItemGroup>
+
+</Project>

@@ -27,7 +27,7 @@ namespace CatalogService.Api.Controllers
             if (result.IsFailure)
                 return BadRequest(result.Errors);
 
-            return CreatedAtAction("Success", result.Value);
+            return Ok(result.Value);
         }
 
         //[Authorize(Roles = "Admin")]

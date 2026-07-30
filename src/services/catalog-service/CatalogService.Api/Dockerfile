@@ -30,4 +30,5 @@ RUN dotnet publish "./CatalogService.Api.csproj" -c $BUILD_CONFIGURATION -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+RUN mkdir -p /app/wwwroot/uploads && chown -R $APP_UID:$APP_UID /app/wwwroot/uploads
 ENTRYPOINT ["dotnet", "CatalogService.Api.dll"]
