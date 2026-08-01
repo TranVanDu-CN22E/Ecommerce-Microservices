@@ -4,6 +4,7 @@ using IdentityService.Application.Features.Auth.Commands.Logout;
 using IdentityService.Application.Features.Auth.Commands.RefreshToken;
 using IdentityService.Application.Features.Auth.Commands.Register;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityService.Api.Controllers;
@@ -19,6 +20,7 @@ public class AuthController : ApiControllerBase
     }
 
     [HttpPost("register")]
+    [AllowAnonymous]
     public async Task<IActionResult> Register(RegisterCommand cmd)
     {
         var result = await _mediator.Send(cmd);
@@ -26,6 +28,7 @@ public class AuthController : ApiControllerBase
     }
 
     [HttpPost("login")]
+    [AllowAnonymous]
     public async Task<IActionResult> Login(LoginCommand cmd)
     {
         var result = await _mediator.Send(cmd);

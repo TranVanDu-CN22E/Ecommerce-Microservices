@@ -1,8 +1,9 @@
-﻿using CatalogService.Application.Features.ProductFeatures.Commands.CreateProduct;
+﻿using AuthenticationShared.Extensions;
+using CatalogService.Application.Features.ProductFeatures.Commands.CreateProduct;
 using CatalogService.Application.Features.ProductFeatures.Commands.UpdateProduct;
 using CatalogService.Application.Features.ProductFeatures.Queries.GetProductById;
 using MediatR;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CatalogService.Api.Controllers
@@ -17,20 +18,27 @@ namespace CatalogService.Api.Controllers
             _mediator = mediator;
         }
         [HttpPost]
-        //[Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<IActionResult> Create([FromForm] CreateProductCommand cmd)
         {
-            var result = await _mediator.Send(cmd);
-            if (result.IsFailure)
-                return BadRequest(result.Errors);
-
-            // Trả về mã 200 OK kèm dữ liệu sản phẩm vừa tạo
-            return Ok(result.Value);
+            var userId = User.GetUserIdString();
+            if (userId != null)
+            {
+                cmd.SellerId = userId;
+                var result = await _mediator.Send(cmd);
+                if (result.IsFailure)
+                    return BadRequest(result.Errors);
+                // Trả về mã 200 OK kèm dữ liệu sản phẩm vừa tạo
+                return Ok(result.Value);
+            }
+            else
+            {
+                return Unauthorized("User ID is null.");
+            }
         }
 
-
         [HttpPut]
-        //[Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<IActionResult> Update([FromForm] UpdateProductCommand cmd)
         {
             var result = await _mediator.Send(cmd);
@@ -39,12 +47,23 @@ namespace CatalogService.Api.Controllers
             return Ok(result.Value);
         }
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetById(GetProductByIdQuery cmd)
         {
             var result = await _mediator.Send(cmd);
             if (result.IsFailure)
                 return BadRequest(result.Errors);
             return Ok(result.Value);
+        }
+
+        [HttpGet("hehehe")]
+        [Authorize]
+        public IActionResult GetCurrentUser()
+        {
+            var userId = User.GetUserIdString();
+            var roles = User.GetRoles();
+
+            return Ok(new { UserId = userId, Roles = roles });
         }
     }
 }

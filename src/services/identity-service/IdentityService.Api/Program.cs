@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -96,7 +97,21 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 app.ApplyMigrations();
+app.Use(async (context, next) =>
+{
+    if (context.User.Identity?.IsAuthenticated == true)
+    {
+        var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var roles = string.Join(",",
+            context.User.FindAll(ClaimTypes.Role).Select(c => c.Value));
 
+        // Thêm header cho downstream services
+        context.Request.Headers["X-User-Id"] = userId;
+        context.Request.Headers["X-User-Roles"] = roles;
+    }
+
+    await next();
+});
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

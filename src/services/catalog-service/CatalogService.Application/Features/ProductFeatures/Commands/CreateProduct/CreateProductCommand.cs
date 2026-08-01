@@ -10,6 +10,7 @@ namespace CatalogService.Application.Features.ProductFeatures.Commands.CreatePro
         public string Slug { get; init; } = string.Empty;
         public string Description { get; init; } = string.Empty;
         public string CategoryId { get; init; } = string.Empty;
+        public string SellerId { get; set; } = string.Empty;
         public IFormFile Thumbnail { get; init; }
         public List<IFormFile> Images {  get; init; }
         public List<CreateProductVariantDto>? Variants { get; init; }

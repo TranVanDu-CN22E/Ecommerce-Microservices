@@ -39,6 +39,7 @@ namespace CatalogService.Infrastructure.Migrations
                     ProductId = table.Column<Guid>(type: "uuid", nullable: false),
                     ProductName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     Price = table.Column<string>(type: "text", nullable: false),
+                    SellerId = table.Column<Guid>(type: "uuid", nullable: false),
                     Description = table.Column<string>(type: "character varying(4000)", maxLength: 4000, nullable: false),
                     CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
                     ThumbnailUrl = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
@@ -63,7 +64,6 @@ namespace CatalogService.Infrastructure.Migrations
                     PriceCurrency = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: false),
                     OriginalPriceAmount = table.Column<decimal>(type: "numeric(18,2)", nullable: true),
                     OriginalPriceCurrency = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: true),
-                    StockQuantity = table.Column<int>(type: "integer", nullable: false),
                     image_url = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     is_active = table.Column<bool>(type: "boolean", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -89,7 +89,8 @@ namespace CatalogService.Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Value = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    StockQuantity = table.Column<int>(type: "integer", nullable: false)
+                    StockQuantity = table.Column<int>(type: "integer", nullable: false),
+                    SoldQuantity = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

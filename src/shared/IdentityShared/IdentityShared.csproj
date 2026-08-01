@@ -13,10 +13,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\services\identity-service\IdentityService.Application\IdentityService.Application.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<!-- Trỏ đến file proto -->
 		<Protobuf Include="Protos\user.proto" GrpcServices="Both" />
 	</ItemGroup>

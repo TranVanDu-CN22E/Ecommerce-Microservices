@@ -8,7 +8,6 @@ public sealed class ProductVariant
     public ProductSku ProductSku { get; private set; } // Unique identifier for the variant, e.g., "RED-MEDIUM"
     public Money Price { get; private set; }
     public Money? OriginalPrice { get; private set; }
-    public int StockQuantity { get; set; }
     public IReadOnlyCollection<VariantAttribute> Attributes => _attributes.AsReadOnly();
     public string? ImageUrl { get; private set; }
     public bool IsActive { get; private set; }

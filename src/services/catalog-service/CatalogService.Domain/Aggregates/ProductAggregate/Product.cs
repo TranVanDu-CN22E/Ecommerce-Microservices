@@ -7,6 +7,7 @@ namespace CatalogService.Domain.Aggregates.ProductAggregate
     {
         public ProductName ProductName { get; private set; }
         public ProductSlug ProductSlug { get; private set; } // Unique slug for URL generation eg:website.com/ao-thun-nam-co-be
+        public Guid SellerId { get; private set; } // The seller who owns this product
         public string Description { get; private set; }
         public CategoryId CategoryId { get; private set; }
         public string ThumbnailUrl { get; private set; } // Main image for the product
@@ -18,11 +19,12 @@ namespace CatalogService.Domain.Aggregates.ProductAggregate
         public List<ProductVariant> Variants { get; private set; } = new();
 
         private Product() { }
-        private Product(ProductId id, ProductName productName, ProductSlug productSlug, string description, CategoryId categoryId, string thumbnailUrl)
+        private Product(ProductId id, ProductName productName, ProductSlug productSlug, Guid sellerId, string description, CategoryId categoryId, string thumbnailUrl)
         {
             Id = id;
             ProductName = productName;
             ProductSlug = productSlug;
+            SellerId = sellerId;
             Description = description;
             CategoryId = categoryId;
             ThumbnailUrl = thumbnailUrl;
@@ -33,6 +35,7 @@ namespace CatalogService.Domain.Aggregates.ProductAggregate
         public static Product Create(
             ProductName productName,
             ProductSlug productSlug,
+            Guid sellerId,
             string description,
             CategoryId categoryId,
             string thumbnailUrl
@@ -42,6 +45,7 @@ namespace CatalogService.Domain.Aggregates.ProductAggregate
                 ProductId.New(),
                 productName,
                 productSlug,
+                sellerId,
                 description,
                 categoryId,
                 thumbnailUrl

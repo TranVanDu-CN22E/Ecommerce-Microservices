@@ -106,7 +106,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development 
       ASPNETCORE_URLS: http://+:8080
-      GrpcSettings__IdentityServiceUrl=http://identity-service:8081
+      GrpcSettings__IdentityServiceUrl: http://identity-service:8081
       LocalFileStorage__BasePath: "wwwroot/uploads"
       ConnectionStrings__Default: "Host=catalog-db;Port=5432;Database=${CATALOG_DB_NAME};Username=${CATALOG_DB_USER};Password=${CATALOG_DB_PASSWORD}"
     depends_on:

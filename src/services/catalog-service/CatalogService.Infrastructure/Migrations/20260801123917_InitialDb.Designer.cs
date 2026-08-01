@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CatalogService.Infrastructure.Migrations
 {
     [DbContext(typeof(CatalogDbContext))]
-    [Migration("20260726164055_InitialDb")]
+    [Migration("20260801123917_InitialDb")]
     partial class InitialDb
     {
         /// <inheritdoc />
@@ -122,6 +122,9 @@ namespace CatalogService.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("PublishedAt");
 
+                    b.Property<Guid>("SellerId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("ThumbnailUrl")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -165,9 +168,6 @@ namespace CatalogService.Infrastructure.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("ProductSku");
 
-                    b.Property<int>("StockQuantity")
-                        .HasColumnType("integer");
-
                     b.HasKey("ProductVariantId");
 
                     b.HasIndex("ProductId");
@@ -197,6 +197,9 @@ namespace CatalogService.Infrastructure.Migrations
                                 .IsRequired()
                                 .HasMaxLength(100)
                                 .HasColumnType("character varying(100)");
+
+                            b1.Property<int>("SoldQuantity")
+                                .HasColumnType("integer");
 
                             b1.Property<int>("StockQuantity")
                                 .HasColumnType("integer");

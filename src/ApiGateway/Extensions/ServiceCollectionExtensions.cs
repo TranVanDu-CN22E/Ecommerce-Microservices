@@ -2,6 +2,7 @@
 using ApiGateway.HealthChecks;
 using ApiGateway.Transforms;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -100,7 +101,7 @@ namespace ApiGateway.Extensions
                         ValidIssuer = jwtSettings.Issuer,
                         ValidAudience = jwtSettings.Audience,
                         IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(jwtSettings.Secret)),
+                            Encoding.UTF8.GetBytes(jwtSettings.Key)),
                         ClockSkew = TimeSpan.Zero
                     };
                 });

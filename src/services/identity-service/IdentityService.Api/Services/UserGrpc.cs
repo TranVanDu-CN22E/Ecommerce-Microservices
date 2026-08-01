@@ -3,7 +3,7 @@ using MediatR;
 using IdentityShared.Protos;
 using IdentityShared.Extensions;
 using IdentityService.Application.Features.User.Queries.GetUserById;
-using Google.Protobuf.WellKnownTypes;
+using IdentityService.Application.Mapping;
 
 namespace IdentityService.Api.Services
 {

@@ -17,7 +17,6 @@ namespace IdentityService.Api.Controllers
         {
             _mediator = mediator;
         }
-        [Authorize]
         [HttpGet("me")]
         public async Task<IActionResult> GetCurrentUser()
         {
@@ -36,6 +35,7 @@ namespace IdentityService.Api.Controllers
             return Ok(result.Value);
         }
         [HttpGet("{userId}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetUserById([FromRoute] string userId)
         {
             if (string.IsNullOrEmpty(userId))

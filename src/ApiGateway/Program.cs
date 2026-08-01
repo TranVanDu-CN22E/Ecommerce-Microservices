@@ -1,6 +1,10 @@
 using ApiGateway.Extensions;
 using ApiGateway.Middleware;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.Security.Claims;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,8 +27,6 @@ try {
     builder.Services.AddGatewayAuthentication(builder.Configuration);
     builder.Services.AddGatewayRateLimiting(builder.Configuration);
     builder.Services.AddGatewayHealthChecks(builder.Configuration);
-
-
 
     builder.Services.AddHttpClient();
     builder.Services.AddEndpointsApiExplorer();

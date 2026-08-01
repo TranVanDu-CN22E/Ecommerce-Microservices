@@ -41,6 +41,7 @@ namespace CatalogService.Application.Features.ProductFeatures.Commands.CreatePro
                 product = Product.Create(
                     productName: new ProductName(request.Name),
                     productSlug: new ProductSlug(request.Slug),
+                    sellerId: Guid.Parse(request.SellerId),
                     description: request.Description,
                     categoryId: category.Id,
                     thumbnailUrl: string.Empty // Tạm thời để empty, sẽ update sau khi có Id
@@ -104,11 +105,10 @@ namespace CatalogService.Application.Features.ProductFeatures.Commands.CreatePro
                             return Result<Guid>.Failure(new[] { new Error("Product.InvalidVariantImage", ex.Message) });
                         }
                     }
-
                     ProductVariant variant;
                     try
                     {
-                        variant = product.AddVariant(
+                        /*variant = product.AddVariant(
                             sku: new ProductSku(variantDto.Sku),
                             price: Money.Create(variantDto.Price, "VND"),
                             originalPrice: variantDto.OriginalPrice.HasValue
@@ -116,7 +116,22 @@ namespace CatalogService.Application.Features.ProductFeatures.Commands.CreatePro
                                 : null,
                             attributes: _mapper.Map<List<VariantAttribute>>(variantDto.Attributes),
                             imageUrl: variantImageUrl
-                        );
+                        );*/
+                        var attributes = new List<VariantAttribute>();
+
+                        foreach (var attr in variantDto.Attributes)
+                        {
+                            attributes.Add(new VariantAttribute(name: attr.Name, value: attr.Value, stockQuantity: attr.StockQuantity));
+                        }
+                        variant = product.AddVariant(
+                            sku: new ProductSku(variantDto.Sku),
+                            price: Money.Create(variantDto.Price, "VND"),
+                            originalPrice: variantDto.OriginalPrice.HasValue
+                                ? Money.Create(variantDto.OriginalPrice.Value, "VND")
+                                : null,
+                            attributes: attributes,
+                            imageUrl: variantImageUrl
+                            );
                     }
                     catch (InvalidOperationException ex)
                     {
