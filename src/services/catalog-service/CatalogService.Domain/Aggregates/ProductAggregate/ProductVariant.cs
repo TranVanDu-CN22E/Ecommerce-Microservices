@@ -5,12 +5,16 @@ public sealed class ProductVariant
     private readonly List<VariantAttribute> _attributes = new();
 
     public ProductVariantId ProductVariantId { get; private set; }
+    public ProductId ProductId { get; private set; } // Foreign key to the parent product
     public ProductSku ProductSku { get; private set; } // Unique identifier for the variant, e.g., "RED-MEDIUM"
     public Money Price { get; private set; }
     public Money? OriginalPrice { get; private set; }
     public IReadOnlyCollection<VariantAttribute> Attributes => _attributes.AsReadOnly();
     public string? ImageUrl { get; private set; }
     public bool IsActive { get; private set; }
+    public int StockQuantity { get; private set; } = 0;
+    public int SoldQuantity { get; private set; } = 0;
+    public int ReservedQuantity { get; private set; } = 0;
     public DateTime CreatedAt { get; private set; }
 
     private ProductVariant() { }
@@ -20,8 +24,8 @@ public sealed class ProductVariant
         ProductSku sku,
         Money price,
         Money? originalPrice,
-        IEnumerable<VariantAttribute> attributes,
         string? imageUrl,
+        int stockQuantity,
         bool isActive)
     {
         if (price.Amount <= 0)
@@ -31,8 +35,8 @@ public sealed class ProductVariant
         ProductSku = sku;
         Price = price;
         OriginalPrice = originalPrice;
-        _attributes.AddRange(attributes);
         ImageUrl = imageUrl;
+        StockQuantity = stockQuantity;
         IsActive = isActive;
         CreatedAt = DateTime.UtcNow;
     }
@@ -79,4 +83,51 @@ public sealed class ProductVariant
         OriginalPrice is Money original &&
         original.Currency == Price.Currency &&
         original.Amount > Price.Amount;
+    public void IncreaseReservedQuantity(int quantity)
+    {
+        if (quantity <= 0)
+            throw new ArgumentException();
+        ReservedQuantity += quantity;
+    }
+    public void DecreaseReservedQuantity(int quantity)
+    {
+        if (quantity <= 0)
+            throw new ArgumentException();
+        if (ReservedQuantity < quantity)
+            throw new InvalidOperationException("Insufficient reserved quantity.");
+        ReservedQuantity -= quantity;
+    }
+    public void IncreaseSoldQuantity(int quantity)
+    {
+        if (quantity <= 0)
+            throw new ArgumentException();
+        SoldQuantity += quantity;
+    }
+    public void IncreaseStock(int quantity)
+    {
+        if (quantity <= 0)
+            throw new ArgumentException();
+
+        StockQuantity += quantity;
+    }
+
+    public void DecreaseStock(int quantity)
+    {
+        if (quantity <= 0)
+            throw new ArgumentException();
+
+        if (StockQuantity < quantity)
+            throw new InvalidOperationException("Insufficient stock.");
+
+        StockQuantity -= quantity;
+    }
+
+    public void SetStock(int quantity)
+    {
+        if (quantity < 0)
+            throw new ArgumentException();
+
+        StockQuantity = quantity;
+    }
+
 }

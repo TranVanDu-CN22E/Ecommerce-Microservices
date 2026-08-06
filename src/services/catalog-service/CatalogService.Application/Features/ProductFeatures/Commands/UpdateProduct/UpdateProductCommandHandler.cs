@@ -98,7 +98,7 @@ namespace CatalogService.Application.Features.ProductFeatures.Commands.UpdatePro
                                 originalPrice: variantDto.OriginalPrice.HasValue
                                     ? Money.Create(variantDto.OriginalPrice.Value, "VND")
                                     : null,
-                                attributes: _mapper.Map<List<VariantAttribute>>(variantDto.Attributes),
+                                stockQuantity: variantDto.StockQuantity,
                                 imageUrl: variantImageUrl
                             );
                         }
@@ -115,6 +115,7 @@ namespace CatalogService.Application.Features.ProductFeatures.Commands.UpdatePro
                                 newOriginalPrice: variantDto.OriginalPrice.HasValue
                                     ? Money.Create(variantDto.OriginalPrice.Value, "VND")
                                     : null,
+                                
                                 variantAttributes: _mapper.Map<List<VariantAttribute>>(variantDto.Attributes),
                                 imageUrl: await _localFileStorage.StoreImageAsync(variantDto.Image, "variants")
                             );

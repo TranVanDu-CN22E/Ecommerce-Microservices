@@ -1,63 +1,36 @@
-﻿using System.Xml.Linq;
-
-namespace CatalogService.Domain.Aggregates.ProductAggregate
+﻿namespace CatalogService.Domain.Aggregates.ProductAggregate
 {
     public sealed class VariantAttribute
     {
+        public Guid ProductVariantAttributeId { get; private set; } = Guid.NewGuid();
+        public ProductVariantId ProductVariantId { get; private set; }
         public string Name { get; set; }
         public string Value { get; set; }
-        public int StockQuantity { get; private set; } = 0;
-        public int SoldQuantity { get; private set; } = 0;
-        private VariantAttribute(){}
-        public VariantAttribute(string name, string value, int? stockQuantity)
+        private VariantAttribute() { }
+        public VariantAttribute(ProductVariantId productVariantId, string name, string value)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Name cannot be null or whitespace.", nameof(name));
             if (string.IsNullOrWhiteSpace(value))
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(value));
-            if (!stockQuantity.HasValue || stockQuantity < 0)
-            {
-                throw new ArgumentException("Stock quantity cannot be negative.", nameof(stockQuantity));
-            }
-            else
-            {
-                StockQuantity = stockQuantity.Value;
-            }
+            ProductVariantId = productVariantId;
             Name = name;
             Value = value;
-            
+
         }
-        public void IncreaseSoldQuantity(int quantity)
+        public static VariantAttribute Create(ProductVariantId productVariantId, string name, string value)
         {
-            if (quantity <= 0)
-                throw new ArgumentException();
-            SoldQuantity += quantity;
+            return new VariantAttribute(productVariantId, name, value);
         }
-        public void IncreaseStock(int quantity)
+        public VariantAttribute Update(string name, string value)
         {
-            if (quantity <= 0)
-                throw new ArgumentException();
-
-            StockQuantity += quantity;
-        }
-
-        public void DecreaseStock(int quantity)
-        {
-            if (quantity <= 0)
-                throw new ArgumentException();
-
-            if (StockQuantity < quantity)
-                throw new InvalidOperationException("Insufficient stock.");
-
-            StockQuantity -= quantity;
-        }
-
-        public void SetStock(int quantity)
-        {
-            if (quantity < 0)
-                throw new ArgumentException();
-
-            StockQuantity = quantity;
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Name cannot be null or whitespace.", nameof(name));
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(value));
+            Name = name;
+            Value = value;
+            return this;
         }
     }
 }

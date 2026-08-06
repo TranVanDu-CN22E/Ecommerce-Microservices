@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CatalogService.Infrastructure.Migrations
 {
     [DbContext(typeof(CatalogDbContext))]
-    [Migration("20260801123917_InitialDb")]
+    [Migration("20260806141733_InitialDb")]
     partial class InitialDb
     {
         /// <inheritdoc />
@@ -140,6 +140,35 @@ namespace CatalogService.Infrastructure.Migrations
                     b.ToTable("Products", (string)null);
                 });
 
+            modelBuilder.Entity("CatalogService.Domain.Aggregates.ProductAggregate.VariantAttribute", b =>
+                {
+                    b.Property<Guid>("ProductVariantAttributeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("ProductVariantAttributeId");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("Name");
+
+                    b.Property<Guid>("ProductVariantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("ProductVariantId");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("Value");
+
+                    b.HasKey("ProductVariantAttributeId");
+
+                    b.HasIndex("ProductVariantId");
+
+                    b.ToTable("VariantAttributes", (string)null);
+                });
+
             modelBuilder.Entity("ProductVariant", b =>
                 {
                     b.Property<Guid>("ProductVariantId")
@@ -159,14 +188,27 @@ namespace CatalogService.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_active");
 
-                    b.Property<Guid?>("ProductId")
-                        .HasColumnType("uuid");
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("ProductId");
 
                     b.Property<string>("ProductSku")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("ProductSku");
+
+                    b.Property<int>("ReservedQuantity")
+                        .HasColumnType("integer")
+                        .HasColumnName("ReservedQuantity");
+
+                    b.Property<int>("SoldQuantity")
+                        .HasColumnType("integer")
+                        .HasColumnName("SoldQuantity");
+
+                    b.Property<int>("StockQuantity")
+                        .HasColumnType("integer")
+                        .HasColumnName("StockQuantity");
 
                     b.HasKey("ProductVariantId");
 
@@ -175,47 +217,22 @@ namespace CatalogService.Infrastructure.Migrations
                     b.ToTable("ProductVariants", (string)null);
                 });
 
+            modelBuilder.Entity("CatalogService.Domain.Aggregates.ProductAggregate.VariantAttribute", b =>
+                {
+                    b.HasOne("ProductVariant", null)
+                        .WithMany("Attributes")
+                        .HasForeignKey("ProductVariantId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ProductVariant", b =>
                 {
                     b.HasOne("CatalogService.Domain.Aggregates.ProductAggregate.Product", null)
                         .WithMany("Variants")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.OwnsMany("CatalogService.Domain.Aggregates.ProductAggregate.VariantAttribute", "Attributes", b1 =>
-                        {
-                            b1.Property<Guid>("ProductVariantId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("integer");
-
-                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
-
-                            b1.Property<string>("Name")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("character varying(100)");
-
-                            b1.Property<int>("SoldQuantity")
-                                .HasColumnType("integer");
-
-                            b1.Property<int>("StockQuantity")
-                                .HasColumnType("integer");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("character varying(100)");
-
-                            b1.HasKey("ProductVariantId", "Id");
-
-                            b1.ToTable("ProductVariantAttributes", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("ProductVariantId");
-                        });
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
 
                     b.OwnsOne("CatalogService.Domain.Aggregates.ProductAggregate.Money", "OriginalPrice", b1 =>
                         {
@@ -264,8 +281,6 @@ namespace CatalogService.Infrastructure.Migrations
                                 .HasForeignKey("ProductVariantId");
                         });
 
-                    b.Navigation("Attributes");
-
                     b.Navigation("OriginalPrice");
 
                     b.Navigation("Price")
@@ -275,6 +290,11 @@ namespace CatalogService.Infrastructure.Migrations
             modelBuilder.Entity("CatalogService.Domain.Aggregates.ProductAggregate.Product", b =>
                 {
                     b.Navigation("Variants");
+                });
+
+            modelBuilder.Entity("ProductVariant", b =>
+                {
+                    b.Navigation("Attributes");
                 });
 #pragma warning restore 612, 618
         }

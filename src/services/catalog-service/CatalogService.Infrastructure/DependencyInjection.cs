@@ -15,6 +15,7 @@ namespace CatalogService.Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IVariantAttributeRepository, VariantAttributeRepository>();
             // Đảm bảo tên chuỗi "StorageSettings" trùng khớp chính xác với Key trong file appsettings.json
             services.Configure<LocalFileStorageOptions>(configuration.GetSection("LocalFileStorage"));
             services.AddTransient<ILocalFileStorage, LocalFileStorage>();

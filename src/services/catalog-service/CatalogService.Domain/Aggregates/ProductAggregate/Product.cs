@@ -81,12 +81,12 @@ namespace CatalogService.Domain.Aggregates.ProductAggregate
             if (!IsPublished) return;
             IsPublished = false;
         }
-        public ProductVariant AddVariant(ProductSku sku, Money price, Money? originalPrice, IEnumerable<VariantAttribute> attributes, string? imageUrl)
+        public ProductVariant AddVariant(ProductSku sku, Money price, Money? originalPrice, int stockQuantity, string? imageUrl)
         {
             if (Variants.Any(v => v.ProductSku == sku))
                 throw new InvalidOperationException($"Variant with SKU '{sku.Value}' already exists.");
 
-            var variant = new ProductVariant(ProductVariantId.New(), sku, price, originalPrice, attributes, imageUrl, true);
+            var variant = new ProductVariant(ProductVariantId.New(), sku, price, originalPrice, imageUrl, stockQuantity, true);
             Variants.Add(variant);
             return variant;
         }

@@ -24,9 +24,17 @@ namespace CatalogService.Application.DTOs
         public string ProductSku { get; set; }
         public Money Price { get; set; } // Chỉ giữ Money, bỏ decimal Price
         public Money? OriginalPrice { get; set; }
-        public List<VariantAttribute> Attributes { get; set; } = new(); // Bỏ underscore
+        public List<VariantAttributeResponse> Attributes { get; set; } = new(); // Bỏ underscore
         public string? ImageUrl { get; set; }
         public bool IsActive { get; set; }
+        public int StockQuantity { get; set; }
+        public int SoldQuantity { get; set; }
+        public int ReservedQuantity { get; set; } // Tổng số lượng đang mua nhưng chưa thanh toán
         public DateTime CreatedAt { get; set; }
+    }
+    public sealed class VariantAttributeResponse
+    {
+        public string Name { get; set; }
+        public string Value { get; set; }
     }
 }

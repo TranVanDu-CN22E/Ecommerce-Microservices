@@ -31,8 +31,4 @@
     <ProjectReference Include="..\IdentityService.Domain\IdentityService.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Caching\" />
-  </ItemGroup>
-
 </Project>

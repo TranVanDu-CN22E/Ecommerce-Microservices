@@ -40,9 +40,16 @@ namespace CatalogService.Application.Features.ProductFeatures.Queries.GetProduct
                     ProductSku = v.ProductSku.Value.ToString(),
                     Price = Money.Create(v.Price.Amount, v.Price.Currency),
                     OriginalPrice = v.OriginalPrice != null ? Money.Create(v.OriginalPrice.Amount, v.OriginalPrice.Currency) : null,
-                    Attributes = v.Attributes.Select(a => a).ToList(),
+                    Attributes = v.Attributes.Select(a => new VariantAttributeResponse
+                    {
+                        Name = a.Name,
+                        Value = a.Value
+                    }).ToList(),
                     ImageUrl = v.ImageUrl,
                     IsActive = v.IsActive,
+                    StockQuantity = v.StockQuantity,
+                    SoldQuantity = v.SoldQuantity,
+                    ReservedQuantity = v.ReservedQuantity,
                     CreatedAt = v.CreatedAt
                 }).ToList()
             };

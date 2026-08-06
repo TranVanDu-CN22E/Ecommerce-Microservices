@@ -71,10 +71,6 @@ namespace CatalogService.Infrastructure.Persistence.Configurations
              builder.Property(x => x.PublishedAt)
                 .HasColumnName("PublishedAt")
                 .IsRequired(false);
-             builder.HasMany(x => x.Variants)
-                .WithOne()
-                .HasForeignKey("ProductId")
-                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

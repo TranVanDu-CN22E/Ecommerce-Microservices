@@ -12,16 +12,18 @@ namespace CatalogService.Application.Features.ProductFeatures.Commands.CreatePro
     {
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
-        private readonly IMapper _mapper;
+        private readonly IVariantAttributeRepository _variantAttributeRepository;
         private readonly ILocalFileStorage _localFileStorage;
         private readonly IUnitOfWork _unitOfWork;
-        public CreateProductCommandHandler(IProductRepository productRepository, ICategoryRepository categoryRepository, IMapper mapper, ILocalFileStorage localFileStorage, IUnitOfWork unitOfWork)
+        private readonly ILogger<CreateProductCommandHandler> _logger;
+        public CreateProductCommandHandler(IProductRepository productRepository, ICategoryRepository categoryRepository, IVariantAttributeRepository variantAttributeRepository, ILocalFileStorage localFileStorage, IUnitOfWork unitOfWork, ILogger<CreateProductCommandHandler> logger)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
-            _mapper = mapper;
+            _variantAttributeRepository = variantAttributeRepository;
             _localFileStorage = localFileStorage;
             _unitOfWork = unitOfWork;
+            _logger = logger;
         }
 
         public async Task<Result<Guid>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
@@ -108,30 +110,25 @@ namespace CatalogService.Application.Features.ProductFeatures.Commands.CreatePro
                     ProductVariant variant;
                     try
                     {
-                        /*variant = product.AddVariant(
-                            sku: new ProductSku(variantDto.Sku),
-                            price: Money.Create(variantDto.Price, "VND"),
-                            originalPrice: variantDto.OriginalPrice.HasValue
-                                ? Money.Create(variantDto.OriginalPrice.Value, "VND")
-                                : null,
-                            attributes: _mapper.Map<List<VariantAttribute>>(variantDto.Attributes),
-                            imageUrl: variantImageUrl
-                        );*/
                         var attributes = new List<VariantAttribute>();
-
+                        variant = product.AddVariant(
+                           sku: new ProductSku(variantDto.Sku),
+                           price: Money.Create(variantDto.Price, "VND"),
+                           originalPrice: variantDto.OriginalPrice.HasValue
+                               ? Money.Create(variantDto.OriginalPrice.Value, "VND")
+                               : null,
+                           stockQuantity: variantDto.StockQuantity,
+                           imageUrl: variantImageUrl
+                           );
                         foreach (var attr in variantDto.Attributes)
                         {
-                            attributes.Add(new VariantAttribute(name: attr.Name, value: attr.Value, stockQuantity: attr.StockQuantity));
+                            // Sửa dòng này:
+                            Console.WriteLine($"Processing attribute {attr.Name}: {attr.Value}");
+
+                            _logger.LogInformation("Processing attribute {name}: {value}", attr.Name, attr.Value);
+                            attributes.Add(new VariantAttribute(variant.ProductVariantId, name: attr.Name, value: attr.Value));
                         }
-                        variant = product.AddVariant(
-                            sku: new ProductSku(variantDto.Sku),
-                            price: Money.Create(variantDto.Price, "VND"),
-                            originalPrice: variantDto.OriginalPrice.HasValue
-                                ? Money.Create(variantDto.OriginalPrice.Value, "VND")
-                                : null,
-                            attributes: attributes,
-                            imageUrl: variantImageUrl
-                            );
+
                     }
                     catch (InvalidOperationException ex)
                     {
@@ -141,6 +138,7 @@ namespace CatalogService.Application.Features.ProductFeatures.Commands.CreatePro
             }
 
             await _productRepository.AddProductAsync(product, cancellationToken);
+            await _variantAttributeRepository.AddVariantAttributeAsync(product.Variants.SelectMany(v => v.Attributes).ToList(), cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result<Guid>.Success(product.Id.Value);

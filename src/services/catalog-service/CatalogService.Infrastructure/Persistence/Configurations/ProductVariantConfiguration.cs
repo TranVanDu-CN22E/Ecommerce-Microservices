@@ -19,7 +19,17 @@ namespace CatalogService.Infrastructure.Persistence.Configurations
                 )
                 .HasColumnName("ProductVariantId")
                 .IsRequired();
-
+            builder.Property(x => x.ProductId)
+                .HasConversion(
+                    v => v.Value,
+                    v => ProductId.Create(v)
+                )
+                .HasColumnName("ProductId")
+                .IsRequired();
+            builder.HasOne<Product>()
+                .WithMany(p => p.Variants)
+                .HasForeignKey(x => x.ProductId)
+                .OnDelete(DeleteBehavior.SetNull);
             builder.Property(x => x.ProductSku)
                 .HasConversion(
                     v => v.Value,
@@ -53,22 +63,21 @@ namespace CatalogService.Infrastructure.Persistence.Configurations
                     .HasMaxLength(3);
             });
 
-            builder.OwnsMany(pv => pv.Attributes, attr =>
-            {
-                attr.WithOwner().HasForeignKey("ProductVariantId"); // FK về ProductVariant
-                attr.Property(a => a.Name).HasMaxLength(100).IsRequired();
-                attr.Property(a => a.Value).HasMaxLength(100).IsRequired();
-                attr.Property(a => a.StockQuantity).IsRequired();
-                attr.Property(a => a.SoldQuantity).IsRequired();
-                attr.ToTable("ProductVariantAttributes"); // tên bảng riêng
-            });
-
             builder.Property(v => v.ImageUrl)
                 .HasColumnName("image_url")
                 .HasMaxLength(500);
 
             builder.Property(v => v.IsActive)
                 .HasColumnName("is_active")
+                .IsRequired();
+            builder.Property(x => x.StockQuantity)
+                .HasColumnName("StockQuantity")
+                .IsRequired();
+            builder.Property(x => x.SoldQuantity)
+                .HasColumnName("SoldQuantity")
+                .IsRequired();
+            builder.Property(x => x.ReservedQuantity)
+                .HasColumnName("ReservedQuantity")
                 .IsRequired();
 
             builder.Property(v => v.CreatedAt)

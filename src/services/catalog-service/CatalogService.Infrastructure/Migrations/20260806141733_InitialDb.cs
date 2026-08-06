@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -59,6 +58,7 @@ namespace CatalogService.Infrastructure.Migrations
                 columns: table => new
                 {
                     ProductVariantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uuid", nullable: false),
                     ProductSku = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     PriceAmount = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
                     PriceCurrency = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: false),
@@ -66,8 +66,10 @@ namespace CatalogService.Infrastructure.Migrations
                     OriginalPriceCurrency = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: true),
                     image_url = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     is_active = table.Column<bool>(type: "boolean", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ProductId = table.Column<Guid>(type: "uuid", nullable: true)
+                    StockQuantity = table.Column<int>(type: "integer", nullable: false),
+                    SoldQuantity = table.Column<int>(type: "integer", nullable: false),
+                    ReservedQuantity = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -77,30 +79,27 @@ namespace CatalogService.Infrastructure.Migrations
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "ProductId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductVariantAttributes",
+                name: "VariantAttributes",
                 columns: table => new
                 {
+                    ProductVariantAttributeId = table.Column<Guid>(type: "uuid", nullable: false),
                     ProductVariantId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Value = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    StockQuantity = table.Column<int>(type: "integer", nullable: false),
-                    SoldQuantity = table.Column<int>(type: "integer", nullable: false)
+                    Value = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductVariantAttributes", x => new { x.ProductVariantId, x.Id });
+                    table.PrimaryKey("PK_VariantAttributes", x => x.ProductVariantAttributeId);
                     table.ForeignKey(
-                        name: "FK_ProductVariantAttributes_ProductVariants_ProductVariantId",
+                        name: "FK_VariantAttributes_ProductVariants_ProductVariantId",
                         column: x => x.ProductVariantId,
                         principalTable: "ProductVariants",
                         principalColumn: "ProductVariantId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateIndex(
@@ -113,6 +112,11 @@ namespace CatalogService.Infrastructure.Migrations
                 name: "IX_ProductVariants_ProductId",
                 table: "ProductVariants",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VariantAttributes_ProductVariantId",
+                table: "VariantAttributes",
+                column: "ProductVariantId");
         }
 
         /// <inheritdoc />
@@ -122,7 +126,7 @@ namespace CatalogService.Infrastructure.Migrations
                 name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "ProductVariantAttributes");
+                name: "VariantAttributes");
 
             migrationBuilder.DropTable(
                 name: "ProductVariants");

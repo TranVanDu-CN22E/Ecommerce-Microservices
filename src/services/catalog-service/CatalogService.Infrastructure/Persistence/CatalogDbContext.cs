@@ -8,6 +8,7 @@ namespace CatalogService.Infrastructure.Persistence
     {
         public DbSet<Product> Products => Set<Product>();
         public DbSet<ProductVariant> ProductVariants => Set<ProductVariant>();
+        public DbSet<VariantAttribute> VariantAttributes => Set<VariantAttribute>();
         public DbSet<Category> Categories => Set<Category>();
         //public DbSet<InboxMessage> InboxMessages => Set<InboxMessage>();
 
