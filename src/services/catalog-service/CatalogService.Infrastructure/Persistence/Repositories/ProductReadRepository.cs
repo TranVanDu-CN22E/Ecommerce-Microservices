@@ -1,36 +1,24 @@
-﻿using CatalogService.Application.Abstractions.Messaging;
-using CatalogService.Application.Abstractions.Services;
-using CatalogService.Application.Common;
+﻿using CatalogService.Application.Abstractions.Services;
 using CatalogService.Application.DTOs;
 using CatalogService.Domain.Aggregates.ProductAggregate;
-using CatalogService.Domain.Interfaces;
 
-namespace CatalogService.Application.Features.ProductFeatures.Queries.GetProductById
+namespace CatalogService.Infrastructure.Persistence.Repositories
 {
-    public class GetProductByIdQueryHandler : IQueryHandler<GetProductByIdQuery, Result<ProductResponseDto>>
+    public class ProductReadRepository : IProductReadRepository
     {
-        private readonly IProductRepository _productRepository;
-        private readonly IProductCacheService _productCacheService;
-
-        public GetProductByIdQueryHandler(IProductRepository productRepository, IProductCacheService productCacheService)
+        private readonly CatalogDbContext _context;
+        public ProductReadRepository(CatalogDbContext context)
         {
-            _productRepository = productRepository;
-            _productCacheService = productCacheService;
+            _context = context;
         }
-        public async Task<Result<ProductResponseDto>> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
+        public Task<ProductResponseDto?> GetProductReadRepository(string productId, CancellationToken cancellationToken = default)
         {
-            var cachedProduct = await _productCacheService.GetProductAsync(request.ProductId, cancellationToken);
-            if (cachedProduct != null)
-            {
-                return Result<ProductResponseDto>.Success(cachedProduct);
-            }
-
-            var product = await _productRepository.GetProductByIdAsync(ProductId.Create(Guid.Parse(request.ProductId)), cancellationToken);
+            var product = _context.Products.FirstOrDefault(p => p.Id == ProductId.Create(Guid.Parse(productId)));
+            
             if (product == null)
             {
-                return Result<ProductResponseDto>.Failure(new[] {new Error("", "Product not found" )});
+                return Task.FromResult<ProductResponseDto?>(null);
             }
-
             var response = new ProductResponseDto
             {
                 Id = product.Id.Value.ToString(),
@@ -65,10 +53,7 @@ namespace CatalogService.Application.Features.ProductFeatures.Queries.GetProduct
                     CreatedAt = v.CreatedAt
                 }).ToList()
             };
-            
-            await _productCacheService.SetProductAsync(request.ProductId, response, cancellationToken);
-
-            return Result<ProductResponseDto>.Success(response);
+            return Task.FromResult<ProductResponseDto?>(response);
         }
     }
 }

@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+
 
 namespace CatalogService.Infrastructure.Persistence
 {
@@ -37,6 +36,7 @@ namespace CatalogService.Infrastructure.Persistence
             }
 
             throw new Exception("Database migration failed after multiple retries.");
+
         }
     }
 }

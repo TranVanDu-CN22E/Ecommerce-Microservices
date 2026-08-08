@@ -1,5 +1,7 @@
 ﻿using CatalogService.Application.Abstractions.Services;
 using CatalogService.Application.DTOs;
+using CatalogService.Domain.Aggregates.ProductAggregate;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using StackExchange.Redis;
 using System.Text.Json;
 
@@ -63,16 +65,48 @@ namespace CatalogService.Infrastructure.Caching
             var serializedProduct = JsonSerializer.Serialize(product, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             return await _database.StringSetAsync(key, serializedProduct, TimeSpan.FromMinutes(_options.DefaultTTLMinutes));
         }
-        public Task<bool> DecrementReservedCountAsync(string productId, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<bool> DeleteProductAsync(string productId, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// </summary>
+        /// <param name="productId">KEYS[1]: Khóa(Key) của sản phẩm, được tạo ra từ hàm GetKey(productId).</param>
+        /// <param name="variantId">ARGV[1]: Mã phiên bản sản phẩm(variantId).</param>
+        /// <param name="quantity">ARGV[2]: Số lượng cần giải phóng(quantity).</param>
+        /// <returns></returns>
+        public async Task ReleaseReservedAsync(string productId, string variantId, int quantity)
         {
-            throw new NotImplementedException();
+            // Nếu reservedQuantity về 0 và không còn ai giữ → key tự expire theo TTL
+            var script = @"
+                local key = KEYS[1]
+                if redis.call('EXISTS', key) == 0 then return 0 end
+                local json = redis.call('GET', key)
+                local product = cjson.decode(json)
+                for _, v in ipairs(product.variants) do
+                    if v.productVariantId == ARGV[1] then
+                        v.reservedQuantity = math.max(0, v.reservedQuantity - tonumber(ARGV[2]))
+                    end
+                end
+                redis.call('SET', key, cjson.encode(product), 'KEEPTTL')
+                return 1
+                ";
+            await _database.ScriptEvaluateAsync(script, new RedisKey[] { GetKey(productId) }, new RedisValue[] { variantId, quantity });
         }
+        /// <summary>
+        /// Đặt gạch/giữ chỗ trước khi mua hàng.
+        /// Đảm bảo tính Atomic (nguyên tử), giúp hệ thống chống Overbooking (bán quá số lượng tồn kho).
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="variantId"></param>
+        /// <param name="quantity"></param>
+        /// <returns></returns>
+        public async Task<bool> TryReserveStockAsync(string productId, string variantId, int quantity)
+        {
+            var key = GetKey(productId);
+            var result = await _database.ScriptEvaluateAsync(RESERVE_SCRIPT,
+                new RedisKey[] { key },
+                new RedisValue[] { variantId, quantity, _options.DefaultTTLMinutes * 60 });
 
+            return (long)result == 1;
+        }
         public async Task<ProductResponseDto?> GetProductAsync(string productId, CancellationToken cancellationToken = default)
         {
             var key = GetKey(productId);
@@ -83,35 +117,31 @@ namespace CatalogService.Infrastructure.Caching
             await _database.KeyExpireAsync(key, TimeSpan.FromMinutes(_options.DefaultTTLMinutes));
             return JsonSerializer.Deserialize<ProductResponseDto>(value!, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
         }
-
-        public Task<int> GetReservedCountAsync(string productId, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> IncrementReservedCountAsync(string productId, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> IsProductExistsAsync(string productId, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<bool> RefreshTtlAsync(string productId, CancellationToken cancellationToken = default)
         {
             var key = GetKey(productId);
             return await _database.KeyExpireAsync(key, TimeSpan.FromMinutes(_options.DefaultTTLMinutes));
         }
-        public Task<bool> UpdateVariantReservedAsync(string productId, string variantSku, int quantityChange, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<bool> UpdateVariantStockAsync(string productId, string variantSku, int quantityChange, CancellationToken cancellationToken = default)
+        public async Task ConfirmPurchaseAsync(string productId, string variantId, int quantity)
         {
-            throw new NotImplementedException();
+            // Giảm cả stockQuantity lẫn reservedQuantity
+            var script = @"
+            local key = KEYS[1]
+            if redis.call('EXISTS', key) == 0 then return 0 end
+            local json = redis.call('GET', key)
+            local product = cjson.decode(json)
+            for _, v in ipairs(product.variants) do
+                if v.productVariantId == ARGV[1] then
+                    v.stockQuantity = v.stockQuantity - tonumber(ARGV[2])
+                    v.reservedQuantity = math.max(0, v.reservedQuantity - tonumber(ARGV[2]))
+                    break
+                end
+            end
+            redis.call('SET', key, cjson.encode(product), 'KEEPTTL')
+            return 1
+        ";
+            await _database.ScriptEvaluateAsync(script, new RedisKey[] { GetKey(productId) }, new RedisValue[] { variantId, quantity });
         }
     }
 }

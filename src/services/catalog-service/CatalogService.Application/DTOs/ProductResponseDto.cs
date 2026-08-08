@@ -34,6 +34,8 @@ namespace CatalogService.Application.DTOs
     }
     public sealed class VariantAttributeResponse
     {
+        public string ProductVariantAttributeId { get; set; }
+        public string ProductVariantId { get; set; }
         public string Name { get; set; }
         public string Value { get; set; }
     }
