@@ -1,6 +1,4 @@
-﻿using CatalogService.Domain.Aggregates.ProductAggregate;
-
-namespace CatalogService.Application.DTOs
+﻿namespace CatalogService.Application.DTOs
 {
     public sealed class ProductResponseDto
     {
@@ -31,6 +29,11 @@ namespace CatalogService.Application.DTOs
         public int SoldQuantity { get; set; }
         public int ReservedQuantity { get; set; } // Tổng số lượng đang mua nhưng chưa thanh toán
         public DateTime CreatedAt { get; set; }
+    }
+    public sealed class Money
+    {
+        public decimal Amount { get; set; }
+        public string Currency { get; set; } = "VND";
     }
     public sealed class VariantAttributeResponse
     {

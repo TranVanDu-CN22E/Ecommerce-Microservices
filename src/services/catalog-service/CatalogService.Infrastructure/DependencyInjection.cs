@@ -31,14 +31,13 @@ namespace CatalogService.Infrastructure
             });
             services.AddScoped<CatalogService.Application.Interfaces.GRPC.IIdentityService, CatalogService.Infrastructure.GRPC.IdentityService>();
 
+            //services.Configure<RedisOptions>(configuration.GetSection("Redis"));
             var redisConfig = configuration.GetSection("Redis").Get<RedisOptions>();
-
             // Singleton ConnectionMultiplexer để tái sử dụng connection
-            services.AddSingleton<IConnectionMultiplexer>(sp =>
-                ConnectionMultiplexer.Connect(redisConfig.ConnectionString));
+            services.AddSingleton<IConnectionMultiplexer>(sp => ConnectionMultiplexer.Connect(redisConfig.ConnectionString));
 
-            services.Configure<RedisOptions>(configuration.GetSection("Redis"));
             services.AddScoped<IProductCacheService, RedisProductCacheService>();
+            services.AddScoped<IProductReadRepository, ProductReadRepository>();
 
             // Đăng ký BackgroundService
             services.AddHostedService<ProductCacheWarmupService>();

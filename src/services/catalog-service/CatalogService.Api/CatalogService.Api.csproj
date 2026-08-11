@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\shared\AuthenticationShared\AuthenticationShared.csproj" />
+    <ProjectReference Include="..\..\..\shared\CatalogShared\CatalogShared.csproj" />
     <ProjectReference Include="..\CatalogService.Application\CatalogService.Application.csproj" />
     <ProjectReference Include="..\CatalogService.Infrastructure\CatalogService.Infrastructure.csproj" />
   </ItemGroup>

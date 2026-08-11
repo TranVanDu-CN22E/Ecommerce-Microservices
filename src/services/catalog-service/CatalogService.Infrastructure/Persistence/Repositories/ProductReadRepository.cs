@@ -1,6 +1,7 @@
 ﻿using CatalogService.Application.Abstractions.Services;
 using CatalogService.Application.DTOs;
 using CatalogService.Domain.Aggregates.ProductAggregate;
+using Microsoft.EntityFrameworkCore;
 
 namespace CatalogService.Infrastructure.Persistence.Repositories
 {
@@ -11,13 +12,58 @@ namespace CatalogService.Infrastructure.Persistence.Repositories
         {
             _context = context;
         }
-        public Task<ProductResponseDto?> GetProductReadRepository(string productId, CancellationToken cancellationToken = default)
+
+        public async Task<List<ProductResponseDto>> GetHotProductRespository(int limit, CancellationToken cancellationToken = default)
         {
-            var product = _context.Products.FirstOrDefault(p => p.Id == ProductId.Create(Guid.Parse(productId)));
+            return await _context.Products
+                .Where(p => p.IsPublished)
+                .OrderByDescending(p => p.PublishedAt)
+                .Take(limit)
+                .Select(p => new ProductResponseDto
+                {
+                    Id = p.Id.Value.ToString(),
+                    ProductName = p.ProductName.ToString(),
+                    ProductSlug = p.ProductSlug.ToString(),
+                    Description = p.Description,
+                    CategoryId = p.CategoryId.Value.ToString(),
+                    ThumbnailUrl = p.ThumbnailUrl.ToString(),
+                    ImageUrls = p.ImageUrls.Select(url => url.ToString()).ToList(),
+                    IsPublished = p.IsPublished,
+                    CreatedAt = p.CreatedAt,
+                    UpdatedAt = p.UpdatedAt,
+                    PublishedAt = p.PublishedAt,
+                    Variants = p.Variants.Select(v => new ProductVariantResponse
+                    {
+                        ProductVariantId = v.ProductVariantId.Value.ToString(),
+                        ProductSku = v.ProductSku.Value.ToString(),
+                        Price = new Application.DTOs.Money { Amount = v.Price.Amount, Currency = v.Price.Currency },
+                        OriginalPrice = v.OriginalPrice != null ? new Application.DTOs.Money { Amount = v.OriginalPrice.Amount, Currency = v.OriginalPrice.Currency } : null,
+                        Attributes = v.Attributes.Select(a => new VariantAttributeResponse
+                        {
+                            ProductVariantAttributeId = a.ProductVariantAttributeId.ToString(),
+                            ProductVariantId = a.ProductVariantId.Value.ToString(),
+                            Name = a.Name,
+                            Value = a.Value
+                        }).ToList(),
+                        ImageUrl = v.ImageUrl,
+                        IsActive = v.IsActive,
+                        StockQuantity = v.StockQuantity,
+                        SoldQuantity = v.SoldQuantity,
+                        ReservedQuantity = v.ReservedQuantity,
+                        CreatedAt = v.CreatedAt
+                    }).ToList()
+                })
+                .ToListAsync(cancellationToken);
+        }
+
+
+        public async Task<ProductResponseDto?> GetProductReadRepository(string productId, CancellationToken cancellationToken = default)
+        {
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == ProductId.Create(Guid.Parse(productId)), cancellationToken);
             
             if (product == null)
             {
-                return Task.FromResult<ProductResponseDto?>(null);
+                return null ;
             }
             var response = new ProductResponseDto
             {
@@ -36,8 +82,8 @@ namespace CatalogService.Infrastructure.Persistence.Repositories
                 {
                     ProductVariantId = v.ProductVariantId.Value.ToString(),
                     ProductSku = v.ProductSku.Value.ToString(),
-                    Price = Money.Create(v.Price.Amount, v.Price.Currency),
-                    OriginalPrice = v.OriginalPrice != null ? Money.Create(v.OriginalPrice.Amount, v.OriginalPrice.Currency) : null,
+                    Price = new Application.DTOs.Money { Amount = v.Price.Amount, Currency = v.Price.Currency },
+                    OriginalPrice = v.OriginalPrice != null ? new Application.DTOs.Money { Amount = v.OriginalPrice.Amount, Currency = v.OriginalPrice.Currency } : null,
                     Attributes = v.Attributes.Select(a => new VariantAttributeResponse
                     {
                         ProductVariantAttributeId = a.ProductVariantAttributeId.ToString(),
@@ -53,7 +99,7 @@ namespace CatalogService.Infrastructure.Persistence.Repositories
                     CreatedAt = v.CreatedAt
                 }).ToList()
             };
-            return Task.FromResult<ProductResponseDto?>(response);
+            return await Task.FromResult<ProductResponseDto?>(response);
         }
     }
 }

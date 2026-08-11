@@ -48,8 +48,8 @@ namespace CatalogService.Application.Features.ProductFeatures.Queries.GetProduct
                 {
                     ProductVariantId = v.ProductVariantId.Value.ToString(),
                     ProductSku = v.ProductSku.Value.ToString(),
-                    Price = Money.Create(v.Price.Amount, v.Price.Currency),
-                    OriginalPrice = v.OriginalPrice != null ? Money.Create(v.OriginalPrice.Amount, v.OriginalPrice.Currency) : null,
+                    Price = new DTOs.Money { Amount = v.Price.Amount, Currency = v.Price.Currency },
+                    OriginalPrice = v.OriginalPrice != null ? new DTOs.Money { Amount = v.OriginalPrice.Amount, Currency = v.OriginalPrice.Currency } : null,
                     Attributes = v.Attributes.Select(a => new VariantAttributeResponse
                     {
                         ProductVariantAttributeId = a.ProductVariantAttributeId.ToString(),

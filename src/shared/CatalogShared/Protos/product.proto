@@ -1,0 +1,54 @@
+﻿syntax = "proto3";
+option csharp_namespace = "CatalogShared.Protos";
+import "google/protobuf/timestamp.proto";
+
+package catalog;
+
+service ProductGrpcService {
+    rpc GetProductById (GetProductByIdRequest) returns (GetProductByIdResponse);
+}
+message GetProductByIdRequest {
+    string product_id = 1;
+}
+message GetProductByIdResponse {
+    ProductDto product = 1;
+    bool success = 2;
+    repeated string errors = 3;
+}
+message ProductDto {
+    string id = 1;
+    string product_name = 2;
+    string product_slug = 3;
+    string description = 4;
+    string category_id = 5;
+    string thumbnail_url = 6;
+    repeated string image_urls = 7;
+    bool is_published = 8;
+    google.protobuf.Timestamp created_at = 9;
+    google.protobuf.Timestamp updated_at = 10;
+    google.protobuf.Timestamp published_at = 11;
+    repeated ProductVariantDto variants = 12;
+}
+message ProductVariantDto {
+    string product_variant_id = 1;
+    string product_sku = 2;
+    Money price = 3;
+    optional Money original_price = 4;
+    repeated VariantAttributeDto variant_attributes = 5;
+    optional string image_url = 6;
+    bool is_active = 7;
+    int32 stock_quantity = 8;
+    int32 sold_quantity = 9;
+    int32 reserved_quantity = 10;
+    google.protobuf.Timestamp created_at = 11;
+}
+message Money {
+    bytes amount = 1;    // Truyền dạng chuỗi "150000.00" để C# map vào decimal chuẩn đét
+    string currency = 2;  // Ví dụ: "VND"
+}
+message VariantAttributeDto {
+    string product_variant_attribute_id = 1;
+    string product_variant_id = 2;
+    string name = 3;
+    string value = 4;
+}

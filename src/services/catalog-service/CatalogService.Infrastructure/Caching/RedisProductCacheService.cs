@@ -2,6 +2,7 @@
 using CatalogService.Application.DTOs;
 using CatalogService.Domain.Aggregates.ProductAggregate;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using System.Text.Json;
 
@@ -13,10 +14,10 @@ namespace CatalogService.Infrastructure.Caching
         private readonly IConnectionMultiplexer _connectionMultiplexer;
         private readonly RedisOptions _options;
         private const string PRODUCT_KEY_PATTERN = "product:{0}";
-        public RedisProductCacheService(IConnectionMultiplexer connectionMultiplexer, RedisOptions options)
+        public RedisProductCacheService(IConnectionMultiplexer connectionMultiplexer, IOptions<RedisOptions> options)
         {
             _connectionMultiplexer = connectionMultiplexer;
-            _options = options;
+            _options = options.Value;
             _database = _connectionMultiplexer.GetDatabase();
         }
         private string GetKey(string productId) => $"{_options.KeyPrefix}{string.Format(PRODUCT_KEY_PATTERN, productId)}";

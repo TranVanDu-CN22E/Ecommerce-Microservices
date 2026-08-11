@@ -17,6 +17,7 @@ COPY ["src/services/identity-service/IdentityService.Application/IdentityService
 COPY ["src/services/identity-service/IdentityService.Domain/IdentityService.Domain.csproj", "src/services/identity-service/IdentityService.Domain/"]
 COPY ["src/services/identity-service/IdentityService.Infrastructure/IdentityService.Infrastructure.csproj", "src/services/identity-service/IdentityService.Infrastructure/"]
 COPY ["src/shared/IdentityShared/IdentityShared.csproj", "src/shared/IdentityShared/"]
+COPY ["src/shared/CatalogShared/CatalogShared.csproj", "src/shared/CatalogShared/"]
 RUN dotnet restore "./src/services/identity-service/IdentityService.Api/IdentityService.Api.csproj"
 COPY . .
 WORKDIR "./src/services/identity-service/IdentityService.Api"

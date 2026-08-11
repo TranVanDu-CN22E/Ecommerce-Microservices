@@ -16,7 +16,6 @@ namespace CatalogService.Infrastructure.Caching
         {
             // Chiến lược warmup: Chỉ load các sản phẩm published, có traffic cao
             // Hoặc dùng event-driven: khi product updated → invalidate cache
-            // Dưới đây là ví dụ periodic consistency check
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -26,9 +25,12 @@ namespace CatalogService.Infrastructure.Caching
                     var cache = scope.ServiceProvider.GetRequiredService<IProductCacheService>();
                     var readRepo = scope.ServiceProvider.GetRequiredService<IProductReadRepository>();
 
-                    // Ví dụ: Re-sync các product hot mỗi 10 phút
-                    // Trong production, nên dùng Redis Keyspace Notifications hoặc CDC (Debezium)
-                    // thay vì polling
+                    var products = await readRepo.GetHotProductRespository(10, stoppingToken);
+
+                    foreach (var product in products)
+                    {
+                        await cache.SetProductAsync(product.Id, product, stoppingToken);
+                    }
 
                     _logger.LogDebug("Product cache consistency check completed");
                 }

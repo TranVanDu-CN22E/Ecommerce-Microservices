@@ -17,6 +17,7 @@ COPY ["src/services/catalog-service/CatalogService.Infrastructure/CatalogService
 COPY ["src/services/catalog-service/CatalogService.Application/CatalogService.Application.csproj", "src/services/catalog-service/CatalogService.Application/"]
 COPY ["src/services/catalog-service/CatalogService.Domain/CatalogService.Domain.csproj", "src/services/catalog-service/CatalogService.Domain/"]
 COPY ["src/shared/IdentityShared/IdentityShared.csproj", "src/shared/IdentityShared/"]
+COPY ["src/shared/CatalogShared/CatalogShared.csproj", "src/shared/CatalogShared/"]
 COPY ["src/shared/AuthenticationShared/AuthenticationShared.csproj", "src/shared/AuthenticationShared/"]
 RUN dotnet restore "./src/services/catalog-service/CatalogService.Api/CatalogService.Api.csproj"
 COPY . .
