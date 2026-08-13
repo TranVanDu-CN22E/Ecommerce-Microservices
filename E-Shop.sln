@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityShared", "src\share
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticationShared", "src\shared\AuthenticationShared\AuthenticationShared.csproj", "{2F868128-18EB-4E64-B697-4289ED9283CA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.Domain", "src\services\order-service\OrderService.Domain\OrderService.Domain.csproj", "{1B331838-1A63-4451-807C-C845BCAF68A2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{2F868128-18EB-4E64-B697-4289ED9283CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F868128-18EB-4E64-B697-4289ED9283CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F868128-18EB-4E64-B697-4289ED9283CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B331838-1A63-4451-807C-C845BCAF68A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B331838-1A63-4451-807C-C845BCAF68A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B331838-1A63-4451-807C-C845BCAF68A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B331838-1A63-4451-807C-C845BCAF68A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
