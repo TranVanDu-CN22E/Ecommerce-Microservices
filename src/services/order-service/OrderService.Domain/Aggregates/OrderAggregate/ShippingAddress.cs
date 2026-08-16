@@ -1,7 +1,10 @@
-﻿namespace OrderService.Domain.Aggregates.OrderAggregate
+﻿using System.Globalization;
+
+namespace OrderService.Domain.Aggregates.OrderAggregate
 {
     public sealed record ShippingAddress
     {
+        public OrderId OrderId { get; private set; }
         public string RecipientName { get; private set; } = string.Empty;
         public string PhoneNumber { get; private set; } = string.Empty;
         public string AddressLine { get; private set; } = string.Empty;
@@ -10,8 +13,9 @@
         public string Province { get; private set; } = string.Empty;
         public string Country { get; private set; } = string.Empty;
         private ShippingAddress() { }
-        private ShippingAddress(string recipientName, string phoneNumber, string addressLine, string ward, string district, string province, string country)
+        private ShippingAddress(Guid orderId, string recipientName, string phoneNumber, string addressLine, string ward, string district, string province, string country)
         {
+            OrderId = OrderId.Create(orderId);
             RecipientName = recipientName;
             PhoneNumber = phoneNumber;
             AddressLine = addressLine;
@@ -20,8 +24,9 @@
             Province = province;
             Country = country;
         }
-        public static ShippingAddress Create(string recipientName, string phoneNumber, string addressLine, string ward, string district, string province, string country)
+        public static ShippingAddress Create(Guid orderId, string recipientName, string phoneNumber, string addressLine, string ward, string district, string province, string country)
         {
+            if (string.IsNullOrWhiteSpace(orderId.ToString())) throw new ArgumentNullException("Order id cannot be null or empty",nameof(orderId));
             if (string.IsNullOrWhiteSpace(recipientName))
             {
                 throw new ArgumentException("Recipient name cannot be null or empty.", nameof(recipientName));
@@ -50,7 +55,7 @@
             {
                 throw new ArgumentException("Country cannot be null or empty.", nameof(country));
             }
-            return new ShippingAddress(recipientName.Trim(), phoneNumber.Trim(), addressLine.Trim(), ward.Trim(), district.Trim(), province.Trim(), country.Trim());
+            return new ShippingAddress(orderId, recipientName.Trim(), phoneNumber.Trim(), addressLine.Trim(), ward.Trim(), district.Trim(), province.Trim(), country.Trim());
         }
         public ShippingAddress Update(string recipientName, string phoneNumber, string addressLine, string ward, string district, string province, string country)
         {

@@ -1,7 +1,15 @@
 ﻿namespace OrderService.Domain.Aggregates.OrderAggregate
 {
-    public readonly record struct Money (decimal Amount, string Currency)
+    public sealed record Money
     {
+        public decimal Amount { get; private set; }
+        public string Currency { get; private set; } = default!;
+        private Money() { }
+        private Money(decimal amount, string currency)
+        {
+            Amount = amount;
+            Currency = currency;
+        }
         public static Money Create(decimal Amount, string Currency)
         {
             if (Amount < 0)

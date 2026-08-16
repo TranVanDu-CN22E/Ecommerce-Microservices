@@ -1,13 +1,13 @@
 ﻿namespace OrderService.Domain.Aggregates.OrderAggregate
 {
-    public sealed class PaymentStatus
+    public readonly record struct PaymentStatus
     {
         public static readonly PaymentStatus Unpaid = new PaymentStatus(1, "Unpaid"); // chưa thanh toán
         public static readonly PaymentStatus Paid = new PaymentStatus(2, "Paid"); // đã thanh toán
         public static readonly PaymentStatus Refunded = new PaymentStatus(3, "Refunded"); // đã hoàn trã
-        public int Id { get; private set; }
-        public string Name { get; private set; }
-        protected PaymentStatus(int id, string name)
+        public int Id { get; init; }
+        public string Name { get; init; }
+        private PaymentStatus(int id, string name)
         {
             Id = id;
             Name = name;

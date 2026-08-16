@@ -31,7 +31,7 @@ namespace OrderService.Domain.Aggregates.ShippingRuleAggregate
 
         public static ShippingRule Create(Province province, Money baseFee, Money? freeThreshold = null)
         {
-            if (freeThreshold is not null && freeThreshold.Value.Currency != baseFee.Currency)
+            if (freeThreshold is not null && freeThreshold.Currency != baseFee.Currency)
                 throw new ArgumentException("BaseFee and FreeThreshold must use the same currency.");
 
             return new ShippingRule(ShippingRuleId.New(), province, baseFee, freeThreshold);
@@ -39,7 +39,7 @@ namespace OrderService.Domain.Aggregates.ShippingRuleAggregate
 
         public void Update(Money baseFee, Money? freeThreshold)
         {
-            if (freeThreshold is not null && freeThreshold.Value.Currency != baseFee.Currency)
+            if (freeThreshold is not null && freeThreshold.Currency != baseFee.Currency)
                 throw new ArgumentException("BaseFee and FreeThreshold must use the same currency.");
 
             BaseFee = baseFee;
@@ -63,7 +63,7 @@ namespace OrderService.Domain.Aggregates.ShippingRuleAggregate
             if (orderItemsTotal.Currency != BaseFee.Currency)
                 throw new InvalidOperationException("Order currency does not match shipping rule currency.");
 
-            if (FreeThreshold is not null && orderItemsTotal.Amount >= FreeThreshold.Value.Amount)
+            if (FreeThreshold is not null && orderItemsTotal.Amount >= FreeThreshold.Amount)
                 return Money.Zero(BaseFee.Currency);
 
             return BaseFee;

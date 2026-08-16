@@ -1,6 +1,6 @@
 ﻿namespace OrderService.Domain.Aggregates.OrderAggregate
 {
-    public sealed class PaymentMethod
+    public readonly record struct PaymentMethod
     {
         /*      phải đổi sealed thành abstract để có thể kế thừa
                 public static readonly PaymentMethod CreditCard = new CreditCardPaymentMethod(); // thẻ tín dụng
@@ -10,9 +10,9 @@
         public static readonly PaymentMethod Cash = new PaymentMethod(2, "Cash"); // tiền mặt
         public static readonly PaymentMethod BankTransfer = new PaymentMethod(3, "BankTransfer"); // chuyển khoản ngân hàng
 
-        public int Id { get; private set; }
-        public string Name { get; private set; }
-        protected PaymentMethod(int id, string name)
+        public int Id { get; init; }
+        public string Name { get; init; }
+        private PaymentMethod(int id, string name)
         {
             Id = id;
             Name = name;
