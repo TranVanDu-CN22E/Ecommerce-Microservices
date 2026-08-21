@@ -3,7 +3,7 @@ using CatalogShared.Models;
 using CatalogShared.Protos;
 namespace CatalogService.Application.Common.Mappings
 {
-    public static class GrpcMapping
+    public static class ProductGrpcMapping
     {
         public static ProductGrpcModel ToSharedModel(this ProductResponseDto response)
         {

@@ -11,6 +11,8 @@ volumes:
     driver: local
   catalog-redis-data:
     driver: local
+  catalog-kafka-data:
+    driver: local
 
 
 services:
@@ -57,6 +59,37 @@ services:
       interval: 10s
       timeout: 3s
       retries: 3
+  
+  ###--------- Kafka --------###
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - evnet
+
+  catalog-kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    volumes:
+      - catalog-kafka-data:/var/lib/kafka/data
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      # Cấu hình Listener: nội bộ Docker dùng cổng 29092, bên ngoài dùng cổng 9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+    networks:
+      - evnet
 
   api-gateway:
     image: api-gateway:latest
@@ -123,9 +156,10 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development 
       ASPNETCORE_URLS: http://+:8080
-      GrpcSettings__IdentityServiceUrl: http://identity-service:8081
+      GrpcSettings__IdentityServiceUrl: http://identity-api:8081
       LocalFileStorage__BasePath: "wwwroot/uploads"
       ConnectionStrings__Default: "Host=catalog-db;Port=5432;Database=${CATALOG_DB_NAME};Username=${CATALOG_DB_USER};Password=${CATALOG_DB_PASSWORD}"
+      Kafka__BootstrapServers: "kafka:29092"
     depends_on:
       - catalog-db
     ports:

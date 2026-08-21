@@ -1,5 +1,6 @@
 ﻿using CatalogService.Domain.Aggregates.CategoryAggregate;
 using CatalogService.Domain.Aggregates.ProductAggregate;
+using CatalogService.Infrastructure.Persistence.Outbox;
 using Microsoft.EntityFrameworkCore;
 
 namespace CatalogService.Infrastructure.Persistence
@@ -10,6 +11,7 @@ namespace CatalogService.Infrastructure.Persistence
         public DbSet<ProductVariant> ProductVariants => Set<ProductVariant>();
         public DbSet<VariantAttribute> VariantAttributes => Set<VariantAttribute>();
         public DbSet<Category> Categories => Set<Category>();
+        public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
         //public DbSet<InboxMessage> InboxMessages => Set<InboxMessage>();
 
         public CatalogDbContext(DbContextOptions<CatalogDbContext> options)

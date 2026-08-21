@@ -16,6 +16,7 @@
 	<ItemGroup>
 		<!-- Trỏ đến file proto -->
 		<Protobuf Include="Protos\product.proto" GrpcServices="Both" />
+		<Protobuf Include="Protos\product_command.proto" GrpcServices="Both"/>
 	</ItemGroup>
 
 </Project>

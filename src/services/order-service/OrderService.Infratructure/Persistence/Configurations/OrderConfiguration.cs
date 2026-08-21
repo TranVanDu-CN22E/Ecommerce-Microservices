@@ -40,7 +40,6 @@ namespace OrderService.Infratructure.Persistence.Configurations
 
             builder.OwnsOne(s => s.ShippingAddress, address =>
             {
-                address.Property(a => a.OrderId).ValueGeneratedNever().HasColumnName("OrderId").IsRequired();
                 address.Property(a => a.RecipientName).HasColumnName("RecipientName").IsRequired();
                 address.Property(a => a.PhoneNumber).HasColumnName("PhoneNumber").IsRequired();
                 address.Property(a => a.AddressLine).HasColumnName("AddressLine").IsRequired();

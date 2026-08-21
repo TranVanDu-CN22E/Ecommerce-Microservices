@@ -1,0 +1,52 @@
+﻿syntax = "proto3";
+option csharp_namespace = "CatalogShared.Protos";
+
+package catalog;
+
+import "google/protobuf/timestamp.proto";
+
+// Service quản lý vòng đời Reserved Stock
+service ReservedProductGrpcService {
+    // Bước 2: User mua hàng → Giữ stock (Hot path)
+    rpc ReserveStock (ReserveStockRequest) returns (ReserveStockResponse);
+    
+    // Bước 4b: Thanh toán thất bại/hủy → Nhả stock
+    rpc ReleaseReservedStock (ReleaseReservedStockRequest) returns (ReleaseReservedStockResponse);
+}
+
+// RESERVE (TĂNG)
+message ReserveStockRequest {
+    string order_id = 1;      // order_id
+    string product_variant_id = 2;
+    int32 quantity = 3;              // Phải > 0
+    google.protobuf.Timestamp reserve_time = 4;
+}
+
+message ReserveStockResponse {
+    bool success = 1;
+    repeated string errors = 2;
+    
+    // Thông tin sau khi reserve thành công
+    int32 reserved_quantity = 3;     // Tổng đang giữ (sau khi tăng)
+    int32 available_stock = 4;       // Stock khả dụng còn lại
+    
+    // Echo back để client confirm
+    string idempotency_key = 5;
+}
+
+//  RELEASE (GIẢM)
+message ReleaseReservedStockRequest {
+    string idempotency_key = 1;      // order_id / payment_transaction_id
+    string product_variant_id = 2;
+    int32 quantity = 3;              // Phải > 0
+    google.protobuf.Timestamp release_time = 4;
+    string reason = 5;               // PAYMENT_FAILED | ORDER_CANCELLED | TIMEOUT
+}
+
+message ReleaseReservedStockResponse {
+    bool success = 1;
+    repeated string errors = 2;
+    int32 remaining_reserved = 3;
+    int32 available_stock = 4;
+    string idempotency_key = 5;
+}

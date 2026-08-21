@@ -45,6 +45,13 @@ namespace OrderService.Domain.Aggregates.OrderAggregate
             var orderId = OrderId.New();
             return new Order(orderId, customerId, paymentMethod, shippingAddress, shippingFee, note, items);
         }
+        public void AddOrderItem(List<OrderItem> items)
+        {
+            if (items != null && items.Count != 0)
+            {
+                Items = items;
+            }
+        }
         public void Confirm()
         {
             if (OrderStatus != OrderStatus.Pending)

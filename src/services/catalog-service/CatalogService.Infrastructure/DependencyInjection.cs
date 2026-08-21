@@ -2,12 +2,15 @@
 using CatalogService.Application.Interfaces.Storage;
 using CatalogService.Domain.Interfaces;
 using CatalogService.Infrastructure.Caching;
+using CatalogService.Infrastructure.GRPC;
+using CatalogService.Infrastructure.Messaging.Kafka;
 using CatalogService.Infrastructure.Persistence;
 using CatalogService.Infrastructure.Persistence.Repositories;
 using CatalogService.Infrastructure.Storage;
+using Confluent.Kafka;
 using Microsoft.EntityFrameworkCore;
-using StackExchange.Redis;
 using Microsoft.Extensions.Configuration;
+using StackExchange.Redis;
 
 namespace CatalogService.Infrastructure
 {
@@ -39,8 +42,30 @@ namespace CatalogService.Infrastructure
             services.AddScoped<IProductCacheService, RedisProductCacheService>();
             services.AddScoped<IProductReadRepository, ProductReadRepository>();
 
+            // Đọc toàn bộ cấu hình từ appsettings.json một cách an toàn
+            var kafkaOptions = configuration.GetSection("Kafka").Get<KafkaOptions>()
+                ?? throw new InvalidOperationException("Kafka configuration is missing.");
+            // Map các thông số vào ProducerConfig của Confluent.Kafka
+            var config = new ProducerConfig
+            {
+                BootstrapServers = kafkaOptions.BootstrapServers,
+                ClientId = kafkaOptions.ClientId,
+                Acks = kafkaOptions.Acks.ToLower() == "all" ? Confluent.Kafka.Acks.All : Confluent.Kafka.Acks.None,
+                EnableIdempotence = kafkaOptions.EnableIdempotence,
+                MessageSendMaxRetries = kafkaOptions.MessageSendMaxRetries,
+                RetryBackoffMs = kafkaOptions.RetryBackoffMs,
+                LingerMs = kafkaOptions.LingerMs,
+                BatchNumMessages = kafkaOptions.BatchNumMessages
+            };
+            // Đăng ký Singleton chuẩn xác (DI tự động quản lý vòng đời và tự Dispose khi app tắt)
+            services.AddSingleton<IProducer<string, string>>(sp =>
+                new ProducerBuilder<string, string>(config).Build());
+
+
             // Đăng ký BackgroundService
             services.AddHostedService<ProductCacheWarmupService>();
+
+            services.AddHostedService<OutboxProcessor>();
             return services;
         }
     }
