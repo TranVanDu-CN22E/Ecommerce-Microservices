@@ -32,6 +32,22 @@ namespace CatalogService.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OutboxMessages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Type = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Content = table.Column<string>(type: "text", nullable: false),
+                    OccurredOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ProcessedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Error = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OutboxMessages", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -109,6 +125,12 @@ namespace CatalogService.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_OutboxMessages_Pending",
+                table: "OutboxMessages",
+                columns: new[] { "ProcessedOnUtc", "OccurredOnUtc" },
+                filter: "\"ProcessedOnUtc\" IS NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProductVariants_ProductId",
                 table: "ProductVariants",
                 column: "ProductId");
@@ -124,6 +146,9 @@ namespace CatalogService.Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "OutboxMessages");
 
             migrationBuilder.DropTable(
                 name: "VariantAttributes");

@@ -1,4 +1,4 @@
-﻿namespace CatalogService.Infrastructure.GRPC
+﻿namespace CatalogService.Infrastructure.Messaging.Kafka
 {
     public class KafkaOptions
     {

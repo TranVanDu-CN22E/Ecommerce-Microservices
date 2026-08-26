@@ -1,7 +1,6 @@
 ﻿using CatalogService.Infrastructure.Persistence.Outbox;
 using Confluent.Kafka;
 using global::CatalogService.Infrastructure.Persistence;
-using global::CatalogService.Infrastructure.Persistence.Outbox;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

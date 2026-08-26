@@ -40,9 +40,8 @@ namespace OrderService.Domain.Aggregates.OrderAggregate
             Items = items;
             CreatedAt = DateTime.UtcNow;
         }
-        public static Order Create(CustomerId customerId, PaymentMethod paymentMethod, ShippingAddress shippingAddress, Money shippingFee, string? note, List<OrderItem> items)
+        public static Order Create(OrderId orderId, CustomerId customerId, PaymentMethod paymentMethod, ShippingAddress shippingAddress, Money shippingFee, string? note, List<OrderItem> items)
         {
-            var orderId = OrderId.New();
             return new Order(orderId, customerId, paymentMethod, shippingAddress, shippingFee, note, items);
         }
         public void AddOrderItem(List<OrderItem> items)

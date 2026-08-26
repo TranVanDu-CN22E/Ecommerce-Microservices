@@ -17,16 +17,15 @@ namespace CatalogService.Infrastructure.Persistence.Configurations
                 .IsRequired();
 
             builder.Property(m => m.Content)
-                .HasColumnType("nvarchar(max)") // Hoặc jsonb nếu dùng PostgreSQL
                 .IsRequired();
 
-            builder.Property(m => m.Error)
-                .HasColumnType("nvarchar(max)");
+            builder.Property(m => m.Error);
 
             // Index để tối ưu query polling của Background Worker
             builder.HasIndex(m => new { m.ProcessedOnUtc, m.OccurredOnUtc })
-                .HasFilter("[ProcessedOnUtc] IS NULL") // Chỉ index record chưa xử lý
+                .HasFilter("\"ProcessedOnUtc\" IS NULL") //  Đã sửa thành dấu ngoặc kép cho Postgres
                 .HasDatabaseName("IX_OutboxMessages_Pending");
+
         }
     }
 }

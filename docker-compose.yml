@@ -13,6 +13,10 @@ volumes:
     driver: local
   catalog-kafka-data:
     driver: local
+  zookeeper-data:
+    driver: local
+  zookeeper-log:
+    driver: local
 
 
 services:
@@ -67,8 +71,16 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - zookeeper-data:/var/lib/zookeeper/data
+      - zookeeper-log:/var/lib/zookeeper/log
     networks:
       - evnet
+    healthcheck:
+      test: echo stat | nc localhost 2181 || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   catalog-kafka:
     image: confluentinc/cp-kafka:7.5.0
@@ -86,10 +98,19 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_ZOOKEEPER_CONNECTION_TIMEOUT_MS: 60000
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
     networks:
       - evnet
+    healthcheck:
+      # Sử dụng nc (netcat) để check cổng 9092 đã mở chưa cho nhẹ và chính xác
+      test: ["CMD-SHELL", "nc -z localhost 9092 || exit 1"]
+      interval: 10s      # Cứ 10 giây check 1 lần (để cho nó thở)
+      timeout: 5s       # Chờ phản hồi trong 5 giây
+      retries: 5        # Thử lại 5 lần trước khi báo lỗi
+      start_period: 15s # Cho phép Kafka có 15 giây đầu tiên để khởi động thoải mái không tính lỗi
 
   api-gateway:
     image: api-gateway:latest
@@ -105,6 +126,7 @@ services:
       - evnet
     depends_on:
       - identity-api
+      - catalog-api
     restart: unless-stopped
   identity-db:
     image: postgres:16
@@ -161,7 +183,10 @@ services:
       ConnectionStrings__Default: "Host=catalog-db;Port=5432;Database=${CATALOG_DB_NAME};Username=${CATALOG_DB_USER};Password=${CATALOG_DB_PASSWORD}"
       Kafka__BootstrapServers: "kafka:29092"
     depends_on:
-      - catalog-db
+      catalog-db:
+        condition: service_started
+      catalog-kafka:
+        condition: service_healthy
     ports:
       - "8104:8080"
     volumes:

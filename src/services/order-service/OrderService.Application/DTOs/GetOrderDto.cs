@@ -1,18 +1,23 @@
-﻿using OrderService.Application.Abstractions.Messaging;
-using OrderService.Application.Common;
-
-namespace OrderService.Application.Features.OrderFeatures.Commands.CreateOrder
+﻿namespace OrderService.Application.DTOs
 {
-    public sealed record CreateOrderCommand : ICommand<Result<Guid>>
+    public sealed record GetOrderDto
     {
-        public string CustomerId { get; set; } = string.Empty;
+        public string OrderId { get; set; }
+        public string CustomerId { get; set; }
+        public int OrderStatus { get; set; }
         public int PaymentMethod { get; set; }
-        public ShippingAddress ShippingAddress { get; set; }
+        public int PaymentStatus { get; set; }
+        public ShippingAddressDto ShippingAddress { get; set; }
         public Money ShippingFee { get; set; }
         public string? Note { get; set; } = string.Empty;
-        public List<OrderItem> OrderItems { get; set; }
+        public string? CancellationReason { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
+        public DateTime? ConfirmedAt { get; set; }
+        public DateTime? CancelledAt { get; set; }
+        public DateTime? PaidAt { get; set; }
+        public List<OrderItemDto> Items { get; set; } = new();
     }
-    public sealed record ShippingAddress
+    public sealed record ShippingAddressDto
     {
         public string RecipientName { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
@@ -22,19 +27,18 @@ namespace OrderService.Application.Features.OrderFeatures.Commands.CreateOrder
         public string Province { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
     }
-    public sealed record Money
+    public sealed record OrderItemDto
     {
-        public decimal Amount { get; set; }
-        public string Currency { get; set; } = default!;
-    }
-    public sealed record OrderItem
-    {
+        public string OrderItemId { get; set; }
+        public string OrderId { get; set; } = default!;
         public string ProductId { get; set; }
         public string ProductVariantId { get; set; }
         public string ProductName { get; set; } = string.Empty;
         public string VariantSku { get; set; } = string.Empty;
         public string? VariantAttribute { get; set; } = string.Empty;
+
         public Money UnitPrice { get; set; } = default!;
         public int Quantity { get; set; }
+        public Money SubTotal {  get; set; } = default!;
     }
 }

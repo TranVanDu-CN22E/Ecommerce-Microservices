@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using OrderService.Domain.Interface;
 using OrderService.Infratructure.Persistence.Repository;
+using OrderService.Application.Abstractions.Services;
+using OrderService.Infratructure.Messaging.Kafka;
 namespace OrderService.Infratructure
 {
     public static class DependencyInjection
@@ -12,6 +14,10 @@ namespace OrderService.Infratructure
 
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IShippingRuleRepository, ShippingRuleRepository>();
+            services.AddScoped<IInboxRepository, InboxRepository>();
+            services.Configure<KafkaConsumerOptions>(configuration.GetSection("KafkaConsumer"));
+            services.AddHostedService<OrderPlacedEventConsumer>();
+
 
             return services;
         }

@@ -2,7 +2,6 @@
 using CatalogService.Application.Interfaces.Storage;
 using CatalogService.Domain.Interfaces;
 using CatalogService.Infrastructure.Caching;
-using CatalogService.Infrastructure.GRPC;
 using CatalogService.Infrastructure.Messaging.Kafka;
 using CatalogService.Infrastructure.Persistence;
 using CatalogService.Infrastructure.Persistence.Repositories;
@@ -66,6 +65,7 @@ namespace CatalogService.Infrastructure
             services.AddHostedService<ProductCacheWarmupService>();
 
             services.AddHostedService<OutboxProcessor>();
+            services.AddScoped<IOutboxRepository, OutboxRepository>();
             return services;
         }
     }

@@ -2,6 +2,7 @@
 using CatalogService.Application.Abstractions.Services;
 using CatalogService.Application.Common;
 using CatalogService.Application.DTOs;
+using CatalogService.Application.Interfaces.GRPC;
 using CatalogShared.Models;
 using MediatR;
 using System.Text.Json;
@@ -12,15 +13,20 @@ namespace CatalogService.Application.Features.OrderFeatures.Commands.PlaceOrder
     {
         private readonly IProductCacheService _cacheService;
         private readonly IOutboxRepository _outboxRepository;
+        private readonly IIdentityService _identityService;
 
-        public PlaceOrderCommandHandler(IProductCacheService cacheService, IOutboxRepository outboxRepository)
+        public PlaceOrderCommandHandler(IProductCacheService cacheService, IOutboxRepository outboxRepository, IIdentityService identityService)
         {
             _cacheService = cacheService;
             _outboxRepository = outboxRepository;
+            _identityService = identityService;
         }
 
         public async Task<Result<Guid>> Handle(PlaceOrderCommand request, CancellationToken ct)
         {
+            var userId = _identityService.GetUserByIdAsync(request.Event.CustomerId, ct);
+            if (userId == null) { return Result<Guid>.Failure(new[] { new Error("IdentityService", "User not found") }); } 
+
             var @event = request.Event;
             var reservedItems = new List<(string ProductId, string VariantId, int Quantity)>();
             try

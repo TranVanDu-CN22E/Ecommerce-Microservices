@@ -28,5 +28,17 @@
         public static readonly Error VariantSkuRequired = new Error("VariantSku", "Variant SKU is required.");
         public static readonly Error UnitPriceRequired = new Error("UnitPrice", "Unit price is required.");
         public static readonly Error QuantityRequired = new Error("Quantity", "Quantity is required.");
+
+        public static readonly Error OrderIdRequired = new Error("OrderIdRequired", "Order ID is required.");
+        public static readonly Error OrderStatusRequired = new Error("OrderStatusRequired", "Order status is required.");
+        public static readonly Error OrderStatusInvalid = new Error("OrderStatusInvalid", "Order status is invalid.");
+        public static readonly Error OrderNotFound = new Error("OrderNotFound", "Order is not found.");
+        public static readonly Error OrderCannotBeCancelledByCustomer = new Error("OrderCannotBeCancelledByCustomer", "Order cannot be cancelled by customer.");
+        public static readonly Error ReasonCancelCannotBeEmpty = new Error("ReasonCancelCannotBeEmpty", "Reason for cancellation cannot be empty.");
+        public static readonly Error InvalidOrderStatus = new Error("InvalidOrderStatus", "Invalid order status.");
+        public static readonly Error OrderCannotBeConfirmed = new Error("OrderCannotBeConfirmed", "Order cannot be confirmed.");
+
+        public static readonly Error PaymentAmountMismatch = new Error("PaymentAmountMismatch", "Payment amount does not match the order amount.");
+        public static readonly Error AmountMustBeGreaterThanZero = new Error("AmountMustBeGreaterThanZero", "Amount must be greater than zero.");
     }
 }

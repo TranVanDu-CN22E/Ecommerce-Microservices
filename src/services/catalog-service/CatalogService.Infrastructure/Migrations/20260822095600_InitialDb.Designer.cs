@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CatalogService.Infrastructure.Migrations
 {
     [DbContext(typeof(CatalogDbContext))]
-    [Migration("20260809112821_InitialDb")]
+    [Migration("20260822095600_InitialDb")]
     partial class InitialDb
     {
         /// <inheritdoc />
@@ -167,6 +167,39 @@ namespace CatalogService.Infrastructure.Migrations
                     b.HasIndex("ProductVariantId");
 
                     b.ToTable("VariantAttributes", (string)null);
+                });
+
+            modelBuilder.Entity("CatalogService.Infrastructure.Persistence.Outbox.OutboxMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Error")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("OccurredOnUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("ProcessedOnUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProcessedOnUtc", "OccurredOnUtc")
+                        .HasDatabaseName("IX_OutboxMessages_Pending")
+                        .HasFilter("\"ProcessedOnUtc\" IS NULL");
+
+                    b.ToTable("OutboxMessages", (string)null);
                 });
 
             modelBuilder.Entity("ProductVariant", b =>

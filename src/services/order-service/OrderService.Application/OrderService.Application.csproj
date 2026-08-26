@@ -13,7 +13,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\shared\CatalogShared\CatalogShared.csproj" />
     <ProjectReference Include="..\OrderService.Domain\OrderService.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\OrderFeatures\Queries\GetOrderByUserId\" />
   </ItemGroup>
 
 </Project>
