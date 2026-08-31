@@ -15,6 +15,10 @@ namespace OrderService.Infratructure.Persistence.Repository
         {
             return await _context.ShippingRules.FirstOrDefaultAsync(sr => sr.Id == shippingRuleId, ct);
         }
+        public async Task<List<ShippingRule>> GetListShippingRulesAsync(CancellationToken ct = default)
+        {
+            return await _context.ShippingRules.Where(sr => sr.IsActive == true).ToListAsync(ct);
+        }
         public async Task AddShippingRuleAsync(ShippingRule shippingRule, CancellationToken ct = default)
         {
             await _context.ShippingRules.AddAsync(shippingRule, ct);

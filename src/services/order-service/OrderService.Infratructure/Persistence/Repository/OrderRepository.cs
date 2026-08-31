@@ -15,6 +15,30 @@ namespace OrderService.Infratructure.Persistence.Repository
         {
             return await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId, cancellationToken);
         }
+
+        public async Task<Domain.Common.PagedResult<Order>> GetOrderByCustomerIdAsync(
+            CustomerId customerId,
+            int pageNumber = 1,
+            int pageSize = 10,
+            CancellationToken cancellationToken = default)
+        {
+            var query = _context.Orders
+                .AsNoTracking()
+                .Where(x => x.CustomerId == customerId);
+
+            // Lấy tổng số bản ghi (chạy 1 câu lệnh COUNT riêng)
+            var totalCount = await query.CountAsync(cancellationToken);
+
+            // Lấy dữ liệu phân trang (bắt buộc phải OrderBy để dữ liệu không bị xáo trộn)
+            var items = await query
+                .OrderByDescending(x => x.Id) // Thay bằng cột ngày tạo hoặc Id có Index
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+
+            return new Domain.Common.PagedResult<Order>(items, totalCount, pageNumber, pageSize);
+        }
+
         public async Task<string> AddOrderAsync(Order order, CancellationToken cancellationToken = default)
         {
             await _context.Orders.AddAsync(order, cancellationToken);
@@ -23,13 +47,11 @@ namespace OrderService.Infratructure.Persistence.Repository
         public async Task UpdateOrderAsync(Order order, CancellationToken cancellationToken = default)
         {
             _context.Orders.Update(order);
-            await _context.SaveChangesAsync(); 
         }
         public async Task DeleteOrderAsync(OrderId orderId, string reason, CancellationToken cancellationToken = default)
         {
             var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId, cancellationToken);
             order.Cancel(reason);
-            await _context.SaveChangesAsync();
         }
     }
 }

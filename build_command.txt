@@ -5,7 +5,7 @@ docker-compose up -d --build
 Add-Migration InitialDb -Project CatalogService.Infrastructure -StartupProject CatalogService.Api
 Update-Database -Project CatalogService.Infrastructure -StartupProject CatalogService.Api
 
-ollama rm qwen2.5-coder:7b
+ollama run qwen2.5-coder:7b
 
 docker-compose build
 docker-compose up -d --build

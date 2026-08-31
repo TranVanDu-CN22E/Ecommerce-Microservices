@@ -1,4 +1,5 @@
 ﻿using OrderService.Application.Abstractions.Messaging;
+using OrderService.Application.Abstractions.Services;
 using OrderService.Application.Common;
 using OrderService.Domain.Aggregates.OrderAggregate;
 using OrderService.Domain.Interface;
@@ -8,9 +9,11 @@ namespace OrderService.Application.Features.OrderFeatures.Commands.UpdateOrderSt
     public class UpdateOrderStatusCommandHandler : ICommandHandler<UpdateOrderStatusCommand, Result<bool>>
     {
         private readonly IOrderRepository _orderRepository;
-        public UpdateOrderStatusCommandHandler(IOrderRepository orderRepository)
+        private readonly IOrderCacheService _redisOrderCacheService;
+        public UpdateOrderStatusCommandHandler(IOrderRepository orderRepository, IOrderCacheService redisOrderCacheService)
         {
             _orderRepository = orderRepository;
+            _redisOrderCacheService = redisOrderCacheService;
         }
 
         public async Task<Result<bool>> Handle(UpdateOrderStatusCommand request, CancellationToken cancellationToken)
@@ -36,6 +39,11 @@ namespace OrderService.Application.Features.OrderFeatures.Commands.UpdateOrderSt
                     break;
                 default:
                     return Result<bool>.Failure(new[] { OrderErrors.InvalidOrderStatus });
+            }
+            // Delete order from Redis if it exists.
+            bool checkOrderInRedis = await _redisOrderCacheService.ExistsOrderAsync(order.Id.ToString(), cancellationToken);
+            if (checkOrderInRedis == true) { 
+                await _redisOrderCacheService.RemoveOrderAsync(order.Id.ToString(), cancellationToken);
             }
             return Result<bool>.Success(true);
         }

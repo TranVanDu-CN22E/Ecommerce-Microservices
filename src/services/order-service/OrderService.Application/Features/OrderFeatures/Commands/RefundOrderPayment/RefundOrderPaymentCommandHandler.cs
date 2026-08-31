@@ -1,4 +1,5 @@
 ﻿using OrderService.Application.Abstractions.Messaging;
+using OrderService.Application.Abstractions.Services;
 using OrderService.Application.Common;
 using OrderService.Domain.Aggregates.OrderAggregate;
 using OrderService.Domain.Interface;
@@ -8,9 +9,11 @@ namespace OrderService.Application.Features.OrderFeatures.Commands.RefundOrderPa
     public class RefundOrderPaymentCommandHandler : ICommandHandler<RefundOrderPaymentCommand, Result<bool>>
     {
         private readonly IOrderRepository _orderRepository;
-        public RefundOrderPaymentCommandHandler(IOrderRepository orderRepository)
+        private readonly IOrderCacheService _redisOrderCacheService;
+        public RefundOrderPaymentCommandHandler(IOrderRepository orderRepository, IOrderCacheService redisOrderCacheService)
         {
             _orderRepository = orderRepository;
+            _redisOrderCacheService = redisOrderCacheService;
         }
         public async Task<Result<bool>> Handle(RefundOrderPaymentCommand request, CancellationToken cancellationToken)
         {
@@ -21,6 +24,13 @@ namespace OrderService.Application.Features.OrderFeatures.Commands.RefundOrderPa
             }
             order.MarkAsRefunded();
             await _orderRepository.UpdateOrderAsync(order);
+
+            // Delete order from Redis if it exists.
+            bool checkOrderInRedis = await _redisOrderCacheService.ExistsOrderAsync(order.Id.ToString(), cancellationToken);
+            if (checkOrderInRedis == true)
+            {
+                await _redisOrderCacheService.RemoveOrderAsync(order.Id.ToString(), cancellationToken);
+            }
             return Result<bool>.Success(true);
         }
     }

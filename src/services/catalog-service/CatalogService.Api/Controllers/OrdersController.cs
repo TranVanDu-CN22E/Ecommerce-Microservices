@@ -21,6 +21,7 @@ public class OrdersController : ControllerBase
     /// <summary>
     /// User đặt hàng → Reserve stock + Push outbox → Kafka async
     /// </summary>
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> PlaceOrder(
         [FromBody] PlaceOrderRequest request,  // API model riêng biệt

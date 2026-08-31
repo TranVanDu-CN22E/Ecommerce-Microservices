@@ -5,6 +5,7 @@ namespace OrderService.Domain.Interface
     public interface IShippingRuleRepository
     {
         Task<ShippingRule?> GetShippingRuleAsync(ShippingRuleId shippingRuleId, CancellationToken ct = default);
+        Task<List<ShippingRule>> GetListShippingRulesAsync(CancellationToken ct = default);
         Task AddShippingRuleAsync(ShippingRule shippingRule, CancellationToken ct = default);
         Task UpdateShippingRuleAsync(ShippingRule shippingRule, CancellationToken ct = default);
     }

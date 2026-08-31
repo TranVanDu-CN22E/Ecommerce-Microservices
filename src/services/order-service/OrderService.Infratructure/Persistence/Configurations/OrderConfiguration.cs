@@ -60,7 +60,37 @@ namespace OrderService.Infratructure.Persistence.Configurations
             builder.Property(o => o.CancelledAt).HasColumnName("CancelledAt");
             builder.Property(o => o.PaidAt).HasColumnName("PaidAt");
 
-            
+            // Tác dụng: Tăng tốc truy vấn "Lấy lịch sử đơn hàng của tôi" của Khách hàng.
+            builder.HasIndex(o => o.CustomerId)
+                   .HasDatabaseName("IX_Orders_CustomerId");
+
+            // Tác dụng: Tối ưu cho trang Lịch sử đơn hàng khi cần Sắp xếp (ORDER BY CreatedAt DESC) và Phân trang.
+            builder.HasIndex(o => new { o.CustomerId, o.CreatedAt })
+                   .HasDatabaseName("IX_Orders_CustomerId_CreatedAt");
+
+            // Tác dụng: Tối ưu cho các câu lệnh thống kê, báo cáo doanh thu theo ngày/tháng/năm của Admin.
+            builder.HasIndex(o => o.CreatedAt)
+                   .HasDatabaseName("IX_Orders_CreatedAt");
+
+            // Tác dụng: Admin thường xuyên lọc đơn "Chờ thanh toán" 
+            // Giả sử id = 1 là 'Chờ thanh toán'. Chúng ta chỉ index các đơn này để index siêu nhẹ.
+            builder.HasIndex(o => o.OrderStatus)
+                   .HasFilter("\"OrderStatus\" = 1")
+                   .HasDatabaseName("IX_Orders_OrderStatus_Pending_Partial");
+
+            // Tác dụng: Chỉ lưu các đơn bị hủy. Giúp thống kê lý do hủy nhanh chóng.
+            builder.HasIndex(o => o.CancelledAt)
+                   .HasFilter("\"CancelledAt\" IS NOT NULL")
+                   .HasDatabaseName("IX_Orders_CancelledAt_Partial");
+
+            builder.HasIndex(o => o.PaymentStatus)
+                   .HasFilter("\"PaymentStatus\" = 1") // Chỉ lưu các đơn có mã là 1
+                   .HasDatabaseName("IX_Orders_PaymentStatus_Unpaid_Partial");
+
+            // Partial Index cho các đơn đã HOÀN TIỀN (PaymentStatus = 3 - Refunded)
+            builder.HasIndex(o => o.PaymentStatus)
+                   .HasFilter("\"PaymentStatus\" = 3") // Chỉ lưu các đơn có mã là 3 (Refunded)
+                   .HasDatabaseName("IX_Orders_PaymentStatus_Refunded_Partial");
         }
     }
 }
